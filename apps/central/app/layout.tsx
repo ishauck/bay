@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/provider/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
+import { AxiomWebVitals } from "next-axiom";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,6 +43,7 @@ export default function RootLayout({
         </ThemeProvider>
         <Toaster />
         <Analytics />
+        <AxiomWebVitals />
       </body>
     </html>
   );

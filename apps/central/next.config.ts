@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-
+import { withAxiom } from "next-axiom";
 const nextConfig: NextConfig = {
   redirects: async () => {
     return [
@@ -12,4 +12,4 @@ const nextConfig: NextConfig = {
   }
 };
 
-export default nextConfig;
+export default withAxiom(nextConfig);
