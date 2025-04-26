@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { steps } from "./page";
+import { steps } from "./lib";
 import { useWelcomeStore } from "@/components/provider/welcome-store";
 
 export default function WelcomeNavigation() {

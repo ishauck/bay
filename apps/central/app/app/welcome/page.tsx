@@ -1,33 +1,11 @@
 'use client'
 
-import WorkspaceCreator from "./components/workspace-creator";
 import { AnimatePresence, motion } from "motion/react"
 import { useWelcomeStore, WelcomeStoreProvider } from "@/components/provider/welcome-store";
-import WelcomeStep from "./components/welcome";
 import { Fragment } from "react";
 import WelcomeNavigation from "./navigation";
 import useKeybind from "@/hooks/use-keybind";
-type Step = {
-  id: string;
-  label: string;
-  isAllowedToContinue: boolean;
-  component: React.FC;
-}
-
-export const steps: Step[] = [
-  {
-    id: "welcome",
-    label: "Welcome",
-    component: WelcomeStep,
-    isAllowedToContinue: true
-  },
-  {
-    id: "workspace-creator",
-    label: "Workspace Creator",
-    component: WorkspaceCreator,
-    isAllowedToContinue: false
-  }
-]
+import { steps } from "./lib";
 
 function WelcomeSteps() {
   const { currentStep, nextStep, previousStep, isAllowedToContinue } = useWelcomeStore((state) => state);

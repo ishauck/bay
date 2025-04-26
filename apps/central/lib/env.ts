@@ -23,8 +23,7 @@ export const env = createEnv({
     NEXT_PUBLIC_ALLOW_USER_SIGNUPS: z
       .string()
       .transform((arg) => arg === "true"),
-    NEXT_PUBLIC_ROOT_DOMAIN: z.string(),
-    NEXT_PUBLIC_AUTH_URL: z.string(),
+    NEXT_PUBLIC_ROOT_DOMAIN: z.string()
   },
 
   /**
@@ -39,7 +38,6 @@ export const env = createEnv({
     DATABASE_URL: process.env.DATABASE_URL,
     REDIS_KV_URL: process.env.REDIS_KV_URL,
     REDIS_KV_TOKEN: process.env.REDIS_KV_TOKEN,
-    NEXT_PUBLIC_AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL,
     NEXT_PUBLIC_ROOT_DOMAIN: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
     NEXT_PUBLIC_ALLOW_USER_SIGNUPS: process.env.NEXT_PUBLIC_ALLOW_USER_SIGNUPS
   },
@@ -47,7 +45,6 @@ export const env = createEnv({
   // @ts-expect-error - This is a workaround to allow the runtimeEnv to be used in the client
   experimental__runtimeEnv: {
     NEXT_PUBLIC_ROOT_DOMAIN: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
-    NEXT_PUBLIC_AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL,
     NEXT_PUBLIC_ALLOW_USER_SIGNUPS: process.env.NEXT_PUBLIC_ALLOW_USER_SIGNUPS
   },
 
