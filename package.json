@@ -1,0 +1,9 @@
+{
+  "name": "@bay/monorepo",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "packageManager": "bun@1.2.5"
+}
