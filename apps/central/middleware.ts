@@ -17,8 +17,9 @@ async function isBayDomain(origin: string) {
     const host = data[0];
     const port = data[1] ?? undefined;
 
-
-    const response = await fetch(port ? `http://${host}:${port}/api/is-bay` : `https://${host}/api/is-bay`);
+    const response = await fetch(
+      port ? `http://${host}:${port}/api/is-bay` : `https://${host}/api/is-bay`
+    );
     const { token } = await response.json();
     await db.set(`is-bay:${origin}`, isBay(token), { ex: 60 * 5 });
     return isBayVal;
@@ -31,7 +32,8 @@ export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
 
   if (url.pathname.startsWith("/api/auth")) {
-    const origin = request.headers.get("origin") ?? request.headers.get("host") ?? "";
+    const origin =
+      request.headers.get("origin") ?? request.headers.get("host") ?? "";
     const isAllowedOrigin = await isBayDomain(origin);
 
     // Handle preflighted requests
