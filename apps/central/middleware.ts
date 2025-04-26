@@ -3,13 +3,14 @@ import { getSessionCookie } from "better-auth/cookies";
  
 export async function middleware(request: NextRequest) {
 	const sessionCookie = getSessionCookie(request);
+	const url = request.nextUrl;
  
-	if (!sessionCookie && request.nextUrl.pathname.startsWith("/app")) {
-		return NextResponse.redirect(new URL("/login", request.url));
+	if (!sessionCookie && url.pathname.startsWith("/app")) {
+		return NextResponse.redirect(new URL("/login", url));
 	}
 
-	if (sessionCookie && request.nextUrl.pathname === "/login") {
-		return NextResponse.redirect(new URL("/app", request.url));
+	if (sessionCookie && url.pathname === "/login") {
+		return NextResponse.redirect(new URL("/app", url));
 	}
  
 	return NextResponse.next();

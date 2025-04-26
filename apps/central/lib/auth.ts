@@ -49,4 +49,5 @@ export const auth = betterAuth({
       clientSecret: env.GITHUB_CLIENT_SECRET,
     },
   },
+  baseURL: env.NEXT_PUBLIC_AUTH_URL,
 });
