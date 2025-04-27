@@ -8,6 +8,7 @@ import { bannedOrgSlugs } from "./org";
 import { allowedOrgSlugChars } from "./org";
 import { nextCookies } from "better-auth/next-js";
 import { getDeploymentAliases } from "./deployments";
+import { ListDeploymentAliasesResponseBody } from "@vercel/sdk/models/listdeploymentaliasesop.js";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -21,7 +22,7 @@ export const auth = betterAuth({
       partitioned: true,
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 30, // 30 days
-      path: "/"
+      path: "/",
     },
   },
   user: {
@@ -65,7 +66,12 @@ export const auth = betterAuth({
     },
   },
   trustedOrigins: async (req) => {
-    const aliases = await getDeploymentAliases();
+    const aliases: ListDeploymentAliasesResponseBody =
+      process.env.VERCEL_ENV === "production" ||
+      process.env.VERCEL_ENV === "preview"
+        ? await getDeploymentAliases()
+        : { aliases: [] };
+
     const origins = [
       `https://${process.env.VERCEL_URL!}`,
       ...aliases.aliases.map((alias) => `https://${alias.alias}`),
