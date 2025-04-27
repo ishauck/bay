@@ -29,6 +29,10 @@ export const env = createEnv({
     NEXT_PUBLIC_AUTH_URL: z.string().optional(),
   },
 
+  shared: {
+    VERCEL_URL: z.string(),
+  },
+
   /**
    * What object holds the environment variables at runtime. This is usually
    * `process.env` or `import.meta.env`.
