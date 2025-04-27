@@ -11,9 +11,9 @@ export default function LoginButton() {
         setIsLoading(true)
         await signIn.social({
             provider: "github",
-            callbackURL: window.location.origin + "/app",
-            errorCallbackURL: window.location.origin + "/error",
-            newUserCallbackURL: window.location.origin + "/app/welcome"
+            callbackURL: `${window.location.origin}/redirect?url=/app&domain=${encodeURIComponent(window.location.origin)}`,
+            errorCallbackURL: `${window.location.origin}/redirect?url=/error&domain=${encodeURIComponent(window.location.origin)}`,
+            newUserCallbackURL: `${window.location.origin}/redirect?url=/app/welcome&domain=${encodeURIComponent(window.location.origin)}`,
         })
         setIsLoading(false)
     }, [])

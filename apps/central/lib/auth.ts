@@ -6,17 +6,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import * as schema from "./db/schema";
 import { bannedOrgSlugs } from "./org";
 import { allowedOrgSlugChars } from "./org";
-import { getDeploymentAliases } from "./deployments";
-
-const origins =
-  process.env.VERCEL != "1"
-    ? ["http://localhost:3000"]
-    : [
-        "http://localhost:3000",
-        ...(await getDeploymentAliases()).aliases.map(
-          (alias) => `https://${alias.alias}`
-        ),
-      ];
+import { getTrustedOrigins, filterTrustedOrigins } from "./trusted-origins";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -60,43 +50,16 @@ export const auth = betterAuth({
       clientSecret: env.GITHUB_CLIENT_SECRET,
     },
   },
-  trustedOrigins: (req) => {
-    let newOrigins = process.env.NEXT_PUBLIC_VERCEL_URL
-      ? [...origins, process.env.NEXT_PUBLIC_VERCEL_URL]
-      : [...origins];
+  trustedOrigins: async (req) => {
+    const origins = await getTrustedOrigins();
+    const host = req.headers.get("host");
+    const origin = req.headers.get("origin");
 
-    newOrigins = newOrigins.map((origin) => {
-      if (!origin.startsWith("http")) {
-        return `https://${origin}`;
-      }
-      return origin;
-    });
-
-    const urls = newOrigins.map((origin) => {
-      try {
-        return new URL(origin);
-      } catch {
-        console.warn(`Invalid URL: ${origin}`);
-        return null;
-      }
-    }).filter(Boolean);
-
-    const filteredUrls = urls.filter((url) => {
-      if (!url) return false;
-      const host = req.headers.get("host");
-      const origin = req.headers.get("origin");
-      return (
-        url.hostname === host ||
-        url.hostname === origin ||
-        url.hostname === origin?.replace(/^https?:\/\//, "")
-      );
-    });
-
-    return filteredUrls.filter((url) => url !== null).map((url) => url.origin);
+    return filterTrustedOrigins(origins, host, origin);
   },
   baseURL: env.NEXT_PUBLIC_AUTH_URL,
   cors: {
-    origin: origins,
+    origin: ["http://localhost:3000"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
