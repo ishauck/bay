@@ -14,6 +14,16 @@ export const auth = betterAuth({
     provider: "pg", // or "mysql", "sqlite"
     schema: schema,
   }),
+  advanced: {
+    defaultCookieAttributes: {
+      secure: true,
+      sameSite: "none",
+      partitioned: true,
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+      path: "/"
+    },
+  },
   user: {
     additionalFields: {
       scope: {
