@@ -2,6 +2,7 @@
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -17,7 +18,7 @@ import { useIsMobile } from "@/hooks/use-mobile"
 import { useEffect } from "react"
 import Link from "next/link"
 import { OrganizationSwitcher } from "./org-switcher"
-import { Home } from "lucide-react"
+import { Home, Settings } from "lucide-react"
 
 export function AppSidebar() {
   const { setOpen } = useSidebar()
@@ -57,6 +58,18 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href="/app/~/settings">
+                <Settings />
+                <span>Settings</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   )
 }

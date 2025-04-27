@@ -25,7 +25,7 @@ export default function WorkspaceCreator() {
             }
 
             nextStep();
-            router.push(`/app/${values.slug}/onboard`);
+            router.push(`/app/${values.slug}`);
         } catch (error) {
             console.error('Failed to create workspace:', error);
             toast.error('Failed to create workspace');

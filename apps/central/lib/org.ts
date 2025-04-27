@@ -22,5 +22,7 @@ export const bannedOrgSlugs = [
   "api",
   "docs",
   "dashboard",
-  "app"
+  "app",
+  "~",
+  "new"
 ];

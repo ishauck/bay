@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/provider/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
 import { AxiomWebVitals } from "next-axiom";
+import QueryProvider from "@/components/provider/query";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,17 +48,19 @@ export default function RootLayout({
     >
       <head />
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
-        <Toaster />
-        <Analytics />
-        <AxiomWebVitals />
+        <QueryProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+          <Toaster />
+          <Analytics />
+          <AxiomWebVitals />
+        </QueryProvider>
       </body>
     </html>
   );

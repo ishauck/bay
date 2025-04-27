@@ -58,7 +58,9 @@ export const auth = betterAuth({
     admin(),
     oAuthProxy(),
     nextCookies(),
-    passkey(),
+    passkey({
+      rpName: "Bay",
+    }),
   ],
   socialProviders: {
     github: {
