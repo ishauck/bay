@@ -6,6 +6,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import * as schema from "./db/schema";
 import { bannedOrgSlugs } from "./org";
 import { allowedOrgSlugChars } from "./org";
+import { getDeploymentAliases } from "./deployments";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -36,7 +37,7 @@ export const auth = betterAuth({
           }
 
           return {
-            data: organization
+            data: organization,
           };
         },
       },
@@ -49,5 +50,20 @@ export const auth = betterAuth({
       clientSecret: env.GITHUB_CLIENT_SECRET,
     },
   },
+  trustedOrigins:
+    process.env.VERCEL != "1"
+      ? ["http://localhost:3000"]
+      : [
+          "http://localhost:3000",
+          ...(await getDeploymentAliases()).aliases.map(
+            (alias) => `https://${alias.alias}`
+          ),
+        ],
   baseURL: env.NEXT_PUBLIC_AUTH_URL,
+  cors: {
+    origin: ["*"],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  },
 });

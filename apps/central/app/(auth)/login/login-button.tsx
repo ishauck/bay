@@ -7,7 +7,6 @@ import { useCallback, useState } from "react";
 
 export default function LoginButton() {
     const [isLoading, setIsLoading] = useState(false)
-
     const login = useCallback(async () => {
         setIsLoading(true)
         await signIn.social({

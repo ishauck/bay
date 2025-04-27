@@ -6,14 +6,13 @@ export const env = createEnv({
     BETTER_AUTH_SECRET: z
       .string()
       .min(16, "BETTER_AUTH_SECRET must be at least 16 characters long"),
-    AUTH_UNION_SECRET: z
-      .string()
-      .min(16, "AUTH_UNION_SECRET must be at least 16 characters long"),
     GITHUB_CLIENT_ID: z.string(),
     GITHUB_CLIENT_SECRET: z.string(),
     DATABASE_URL: z.string(),
     REDIS_KV_URL: z.string().url("REDIS_KV_URL is not a valid URL"),
     REDIS_KV_TOKEN: z.string().optional(),
+    VERCEL_TOKEN: z.string(),
+    VERCEL_TEAM_ID: z.string(),
   },
 
   /**
@@ -36,8 +35,6 @@ export const env = createEnv({
    */
   runtimeEnv: {
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
-    BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
-    AUTH_UNION_SECRET: process.env.AUTH_UNION_SECRET,
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
@@ -46,6 +43,8 @@ export const env = createEnv({
     NEXT_PUBLIC_ROOT_DOMAIN: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
     NEXT_PUBLIC_ALLOW_USER_SIGNUPS: process.env.NEXT_PUBLIC_ALLOW_USER_SIGNUPS,
     NEXT_PUBLIC_AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL,
+    VERCEL_TOKEN: process.env.VERCEL_TOKEN,
+    VERCEL_TEAM_ID: process.env.VERCEL_TEAM_ID,
   },
 
   // @ts-expect-error - This is a workaround to allow the runtimeEnv to be used in the client
