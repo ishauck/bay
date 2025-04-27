@@ -51,13 +51,32 @@ export const auth = betterAuth({
     github: {
       clientId: env.GITHUB_CLIENT_ID,
       clientSecret: env.GITHUB_CLIENT_SECRET,
-      redirectUri: `${env.NEXT_PUBLIC_AUTH_URL}/api/auth/callback/github`,
+      redirectURI: `${env.NEXT_PUBLIC_AUTH_URL}/api/auth/callback/github`,
     },
   },
-  trustedOrigins: [
-    `https://${process.env.VERCEL_URL!}/*`,
-    ...(await getDeploymentAliases()).aliases.map(
-      (alias) => `https://${alias.alias}/*`
-    )
-  ],
+  trustedOrigins: async (req) => {
+    const aliases = await getDeploymentAliases();
+    const origins = [
+      `https://${process.env.VERCEL_URL!}`,
+      ...aliases.aliases.map((alias) => `https://${alias.alias}`),
+    ];
+
+    const url =
+      req.headers.get("host") ||
+      req.headers.get("origin") ||
+      req.headers.get("referer");
+
+    if (!url) {
+      return origins;
+    }
+
+    const urlObj = new URL(`https://${url}`);
+    const host = urlObj.host;
+    const port = urlObj.port;
+
+    return origins.filter((origin) => {
+      const originUrl = new URL(origin);
+      return originUrl.host === host && originUrl.port === port;
+    });
+  },
 });
