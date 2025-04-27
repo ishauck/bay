@@ -9,6 +9,7 @@ import { allowedOrgSlugChars } from "./org";
 import { nextCookies } from "better-auth/next-js";
 import { getDeploymentAliases } from "./deployments";
 import { ListDeploymentAliasesResponseBody } from "@vercel/sdk/models/listdeploymentaliasesop.js";
+import { passkey } from "better-auth/plugins/passkey";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -57,6 +58,7 @@ export const auth = betterAuth({
     admin(),
     oAuthProxy(),
     nextCookies(),
+    passkey(),
   ],
   socialProviders: {
     github: {

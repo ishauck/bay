@@ -10,7 +10,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { User, LogOut, Sun, Moon } from "lucide-react";
+import { LogOut, Sun, Moon } from "lucide-react";
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -70,10 +70,7 @@ export default function UserProfile() {
                         )}
                     </div>
                 </DropdownMenuLabel>
-                <DropdownMenuItem>
-                    <User className="w-4 h-4" />
-                    Profile
-                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => {
                     toast.success("Theme updated");
 
