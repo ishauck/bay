@@ -60,20 +60,31 @@ export const auth = betterAuth({
       clientSecret: env.GITHUB_CLIENT_SECRET,
     },
   },
-  trustedOrigins: (() => {
+  trustedOrigins: (req) => {
     let newOrigins = process.env.NEXT_PUBLIC_VERCEL_URL
       ? [...origins, process.env.NEXT_PUBLIC_VERCEL_URL]
       : [...origins];
 
     newOrigins = newOrigins.map((origin) => {
-      if (!origin.startsWith("http")) {
-        return "https://" + origin + "/**";
+      if (origin.startsWith("http")) {
+        return "https://" + origin;
       }
-      return origin + "/**";
+      return origin;
     });
 
-    return newOrigins;
-  })(),
+    const urls = newOrigins.map((origin) => {
+      return new URL(origin);
+    });
+
+    const filteredUrls = urls.filter((url) => {
+      return (
+        url.hostname === req.headers.get("host") ||
+        url.hostname === req.headers.get("origin")
+      );
+    });
+
+    return filteredUrls.map((url) => url.origin);
+  },
   baseURL: env.NEXT_PUBLIC_AUTH_URL,
   cors: {
     origin: origins,
