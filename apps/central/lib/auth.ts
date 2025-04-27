@@ -92,7 +92,7 @@ export const auth = betterAuth({
       );
     });
 
-    return filteredUrls.map((url) => url.origin);
+    return filteredUrls.filter((url) => url !== null).map((url) => url.origin);
   },
   baseURL: env.NEXT_PUBLIC_AUTH_URL,
   cors: {
