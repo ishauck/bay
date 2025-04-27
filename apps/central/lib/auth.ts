@@ -61,15 +61,18 @@ export const auth = betterAuth({
     },
   },
   trustedOrigins: (() => {
-    const newOrigins = process.env.NEXT_PUBLIC_VERCEL_URL
+    let newOrigins = process.env.NEXT_PUBLIC_VERCEL_URL
       ? [...origins, process.env.NEXT_PUBLIC_VERCEL_URL]
       : [...origins];
-    return newOrigins.map((origin) => {
+
+    newOrigins = newOrigins.map((origin) => {
       if (!origin.startsWith("http")) {
         return "https://" + origin + "/**";
       }
-      return origin + "/**";
+      return origin;
     });
+
+    return [...newOrigins, ...newOrigins.map((origin) => origin + "/**")];
   })(),
   baseURL: env.NEXT_PUBLIC_AUTH_URL,
   cors: {
