@@ -59,7 +59,7 @@ export const auth = betterAuth({
   },
   baseURL: env.NEXT_PUBLIC_AUTH_URL,
   cors: {
-    origin: ["http://localhost:3000"],
+    origin: await getTrustedOrigins(),
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
