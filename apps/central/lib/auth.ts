@@ -66,6 +66,11 @@ export const auth = betterAuth({
       clientSecret: env.GITHUB_CLIENT_SECRET,
       redirectURI: `${env.NEXT_PUBLIC_AUTH_URL}/api/auth/callback/github`,
     },
+    google: {
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+      redirectURI: `${env.NEXT_PUBLIC_AUTH_URL}/api/auth/callback/google`,
+    },
   },
   trustedOrigins: async (req) => {
     const aliases: ListDeploymentAliasesResponseBody =
