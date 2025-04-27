@@ -8,6 +8,16 @@ import { bannedOrgSlugs } from "./org";
 import { allowedOrgSlugChars } from "./org";
 import { getDeploymentAliases } from "./deployments";
 
+const origins =
+  process.env.VERCEL != "1"
+    ? ["http://localhost:3000"]
+    : [
+        "http://localhost:3000",
+        ...(await getDeploymentAliases()).aliases.map(
+          (alias) => `https://${alias.alias}`
+        ),
+      ];
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg", // or "mysql", "sqlite"
@@ -50,18 +60,10 @@ export const auth = betterAuth({
       clientSecret: env.GITHUB_CLIENT_SECRET,
     },
   },
-  trustedOrigins:
-    process.env.VERCEL != "1"
-      ? ["http://localhost:3000"]
-      : [
-          "http://localhost:3000",
-          ...(await getDeploymentAliases()).aliases.map(
-            (alias) => `https://${alias.alias}`
-          ),
-        ],
+  trustedOrigins: origins,
   baseURL: env.NEXT_PUBLIC_AUTH_URL,
   cors: {
-    origin: ["*"],
+    origin: origins,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
