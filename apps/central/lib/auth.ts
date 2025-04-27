@@ -55,7 +55,7 @@ export const auth = betterAuth({
     const host = req.headers.get("host");
     const origin = req.headers.get("origin");
 
-    return filterTrustedOrigins(origins, host, origin);
+    return filterTrustedOrigins(origins, host, origin).map((url) => url + "/**");
   },
   baseURL: env.NEXT_PUBLIC_AUTH_URL,
   cors: {
