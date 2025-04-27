@@ -7,6 +7,7 @@ import * as schema from "./db/schema";
 import { bannedOrgSlugs } from "./org";
 import { allowedOrgSlugChars } from "./org";
 import { nextCookies } from "better-auth/next-js";
+import { getDeploymentAliases } from "./deployments";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -53,5 +54,10 @@ export const auth = betterAuth({
       redirectUri: `${env.NEXT_PUBLIC_AUTH_URL}/api/auth/callback/github`,
     },
   },
-  trustedOrigins: [process.env.VERCEL_URL!]
+  trustedOrigins: [
+    `https://${process.env.VERCEL_URL!}/*`,
+    ...(await getDeploymentAliases()).aliases.map(
+      (alias) => `https://${alias.alias}/*`
+    )
+  ],
 });
