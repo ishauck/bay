@@ -13,6 +13,16 @@ export const auth = betterAuth({
     provider: "pg", // or "mysql", "sqlite"
     schema: schema,
   }),
+  advanced: {
+    defaultCookieAttributes: {
+      secure: true,
+      sameSite: "none",
+      partitioned: true,
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+      path: "/",
+    },
+  },
   user: {
     additionalFields: {
       scope: {
@@ -54,7 +64,6 @@ export const auth = betterAuth({
     const origins = await getTrustedOrigins();
     const host = req.headers.get("host");
     const origin = req.headers.get("origin");
-
     return filterTrustedOrigins(origins, host, origin).map((url) => url + "/**");
   },
   baseURL: env.NEXT_PUBLIC_AUTH_URL,
