@@ -60,7 +60,7 @@ export const auth = betterAuth({
       clientSecret: env.GITHUB_CLIENT_SECRET,
     },
   },
-  trustedOrigins: origins,
+  trustedOrigins:  process.env.NEXT_PUBLIC_VERCEL_URL ? [...origins, process.env.NEXT_PUBLIC_VERCEL_URL] : [...origins],
   baseURL: env.NEXT_PUBLIC_AUTH_URL,
   cors: {
     origin: origins,
