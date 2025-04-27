@@ -66,9 +66,9 @@ export const auth = betterAuth({
       : [...origins];
     return newOrigins.map((origin) => {
       if (!origin.startsWith("http")) {
-        return "https://" + origin + "/*";
+        return "https://" + origin + "/**";
       }
-      return origin + "/*";
+      return origin + "/**";
     });
   })(),
   baseURL: env.NEXT_PUBLIC_AUTH_URL,
