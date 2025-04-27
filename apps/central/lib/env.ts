@@ -26,9 +26,7 @@ export const env = createEnv({
       .string()
       .transform((arg) => arg === "true"),
     NEXT_PUBLIC_ROOT_DOMAIN: z.string(),
-    NEXT_PUBLIC_AUTH_URL: z.string().optional(),
-    NEXT_PUBLIC_VERCEL_URL: z.string(),
-
+    NEXT_PUBLIC_AUTH_URL: z.string().optional()
   },
 
   /**

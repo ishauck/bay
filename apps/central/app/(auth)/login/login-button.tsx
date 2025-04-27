@@ -11,9 +11,9 @@ export default function LoginButton() {
         setIsLoading(true)
         await signIn.social({
             provider: "github",
-            callbackURL: process.env.VERCEL_URL + "/app",
-            errorCallbackURL: process.env.VERCEL_URL + "/error",
-            newUserCallbackURL: process.env.VERCEL_URL + "/app/welcome"
+            callbackURL: process.env.NEXT_PUBLIC_VERCEL_URL + "/app",
+            errorCallbackURL: process.env.NEXT_PUBLIC_VERCEL_URL + "/error",
+            newUserCallbackURL: process.env.NEXT_PUBLIC_VERCEL_URL + "/app/welcome"
         })
         setIsLoading(false)
     }, [])
