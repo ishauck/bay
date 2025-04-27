@@ -66,20 +66,29 @@ export const auth = betterAuth({
       : [...origins];
 
     newOrigins = newOrigins.map((origin) => {
-      if (origin.startsWith("http")) {
-        return "https://" + origin;
+      if (!origin.startsWith("http")) {
+        return `https://${origin}`;
       }
       return origin;
     });
 
     const urls = newOrigins.map((origin) => {
-      return new URL(origin);
-    });
+      try {
+        return new URL(origin);
+      } catch {
+        console.warn(`Invalid URL: ${origin}`);
+        return null;
+      }
+    }).filter(Boolean);
 
     const filteredUrls = urls.filter((url) => {
+      if (!url) return false;
+      const host = req.headers.get("host");
+      const origin = req.headers.get("origin");
       return (
-        url.hostname === req.headers.get("host") ||
-        url.hostname === req.headers.get("origin")
+        url.hostname === host ||
+        url.hostname === origin ||
+        url.hostname === origin?.replace(/^https?:\/\//, "")
       );
     });
 
