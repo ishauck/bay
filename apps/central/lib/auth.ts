@@ -69,10 +69,10 @@ export const auth = betterAuth({
       if (!origin.startsWith("http")) {
         return "https://" + origin + "/**";
       }
-      return origin;
+      return origin + "/**";
     });
 
-    return [...newOrigins, ...newOrigins.map((origin) => origin + "/**")];
+    return newOrigins;
   })(),
   baseURL: env.NEXT_PUBLIC_AUTH_URL,
   cors: {
