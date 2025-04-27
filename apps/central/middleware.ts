@@ -5,7 +5,7 @@ export async function middleware(request: NextRequest) {
   const sessionCookie = getSessionCookie(request);
   const url = request.nextUrl;
 
-  if (!sessionCookie && url.pathname.startsWith("/app")) {
+  if (!sessionCookie && (url.pathname.startsWith("/app") || url.pathname === "/logout")) {
     return NextResponse.redirect(new URL("/login", url));
   }
 

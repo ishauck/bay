@@ -1,4 +1,4 @@
-import { signOut, useSession } from "@/lib/auth-client";
+import { useSession } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
@@ -42,8 +42,7 @@ export default function UserProfile() {
     const { resolvedTheme, setTheme } = useTheme()
     const userData = user.data?.user
     const logout = useCallback(async () => {
-        await signOut();
-        router.push("/login?ref=logout")
+        router.push("/logout")
     }, [router])
 
     return (
