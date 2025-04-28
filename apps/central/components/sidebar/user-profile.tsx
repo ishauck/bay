@@ -23,7 +23,7 @@ function SessionIcon() {
         <>
             {userData?.image ? (
                 <Avatar>
-                    <AvatarImage src={userData.image} />
+                    <AvatarImage alt={userData.name} src={userData.image} />
                     <AvatarFallback className="bg-blue-600 text-white">
                         {userData?.name?.charAt(0)}
                     </AvatarFallback>

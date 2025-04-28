@@ -68,7 +68,7 @@ export default function OrgPage() {
                 <>
                   <div className="flex items-center gap-2">
                     <Plus className="w-6 h-6 text-primary" />
-                    <h3 className="font-semibold text-base">Create a new form</h3>
+                    <span className="font-semibold text-base">Create a new form</span>
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     Start from scratch or use a template
