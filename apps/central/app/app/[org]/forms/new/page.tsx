@@ -9,6 +9,12 @@ export default function NewFormPage() {
     const router = useRouter();
     const org = useCurrentOrganization();
     const formCreated = useRef(false);
+
+    useEffect(() => {
+        if (org.data?.name) {
+            document.title = `Creating... - ${org.data.name}`;
+        }
+    }, [org.data?.name]);
     
     useEffect(() => {
         const run = async () => {
