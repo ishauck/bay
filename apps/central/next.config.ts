@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
         destination: "/login",
         permanent: true,
       },
+      {
+        source: "/app/:org/forms",
+        destination: "/app/:org/new/form",
+        permanent: true,
+      },
     ];
   }
 };

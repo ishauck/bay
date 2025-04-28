@@ -20,7 +20,7 @@ interface KeybindOptions {
 }
 
 const FORM_ELEMENTS = ['INPUT', 'TEXTAREA', 'SELECT', 'OPTION', 'BUTTON'] as const;
-const SEQUENCE_TIMEOUT = 5000; // Default timeout for sequence keybinds
+const SEQUENCE_TIMEOUT = 4000; // Default timeout for sequence keybinds
 
 // Map of string modifiers to Modifier enum
 const MODIFIER_MAP: Record<string, Modifier> = {
@@ -105,7 +105,7 @@ export default function useKeybind(key: string | string[], callback: CallbackFn,
     const currentIndexRef = useRef(0);
     const lastKeyTimeRef = useRef<number | null>(null);
     const timeout = options.timeout ?? SEQUENCE_TIMEOUT;
-    
+
     // Parse keybind string if it's a string
     const parsedKeybinds = useMemo(() => {
         if (typeof key === 'string') {
@@ -129,34 +129,44 @@ export default function useKeybind(key: string | string[], callback: CallbackFn,
             }
             lastKeyTimeRef.current = now;
 
-            for (const { modifiers, key } of parsedKeybinds) {
-                const normalizedKey = key.toLowerCase() === "space" ? " " : key;
-                const formattedKey = modifiers.includes(Modifier.Shift)
-                    ? normalizedKey.toUpperCase()
-                    : normalizedKey.toLowerCase();
+            // temporary fix as of 4/27/25
+            const currentKeybind = parsedKeybinds[currentIndexRef.current];
+            const normalizedKey = currentKeybind.key.toLowerCase() === "space" ? " " :
+                currentKeybind.key.toLowerCase() === "escape" ? "Escape" :
+                    currentKeybind.key.toLowerCase() === "enter" ? "Enter" :
+                        currentKeybind.key.toLowerCase() === "tab" ? "Tab" :
+                            currentKeybind.key.toLowerCase() === "backspace" ? "Backspace" :
+                                currentKeybind.key.toLowerCase() === "delete" ? "Delete" :
+                                    currentKeybind.key.toLowerCase() === "arrowup" ? "ArrowUp" :
+                                        currentKeybind.key.toLowerCase() === "arrowdown" ? "ArrowDown" :
+                                            currentKeybind.key.toLowerCase() === "arrowleft" ? "ArrowLeft" :
+                                                currentKeybind.key.toLowerCase() === "arrowright" ? "ArrowRight" :
+                                                    (currentKeybind.modifiers.includes(Modifier.Shift)
+                                                        ? currentKeybind.key.toUpperCase()
+                                                        : currentKeybind.key.toLowerCase());
 
-                if ((event.key === formattedKey || event.key === normalizedKey.toLowerCase()) &&
-                    checkModifiers(event, modifiers, isMac)) {
-                    if (options.preventDefault ?? true) {
-                        event.preventDefault();
-                    }
-
-                    if (parsedKeybinds.length > 1) {
-                        // Handle sequence keybind
-                        if (currentIndexRef.current === parsedKeybinds.length - 1) {
-                            callback(event);
-                            currentIndexRef.current = 0;
-                        } else {
-                            currentIndexRef.current += 1;
-                        }
-                    } else {
-                        // Handle single keybind
-                        callback(event);
-                    }
-                    return;
+            if ((event.key === currentKeybind.key || event.key === normalizedKey) &&
+                checkModifiers(event, currentKeybind.modifiers, isMac)) {
+                if (options.preventDefault ?? true) {
+                    event.preventDefault();
                 }
+
+                if (parsedKeybinds.length > 1) {
+                    // Handle sequence keybind
+                    if (currentIndexRef.current === parsedKeybinds.length - 1) {
+                        callback(event);
+                        currentIndexRef.current = 0;
+                    } else {
+                        currentIndexRef.current += 1;
+                    }
+                } else {
+                    // Handle single keybind
+                    callback(event);
+                }
+            } else {
+                // Reset sequence if wrong key is pressed
+                currentIndexRef.current = 0;
             }
-            currentIndexRef.current = 0;
         };
 
         window.addEventListener("keydown", handleKeyDown);

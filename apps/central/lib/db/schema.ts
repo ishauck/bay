@@ -18,7 +18,7 @@ export const user = pgTable("user", {
   role: text("role").default("user"),
   banned: boolean("banned").notNull().default(false),
   banReason: text("ban_reason"),
-  banExpires: timestamp("ban_expires")
+  banExpires: timestamp("ban_expires"),
 });
 
 export const session = pgTable("session", {
@@ -33,7 +33,7 @@ export const session = pgTable("session", {
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   activeOrganizationId: text("active_organization_id"),
-  impersonatedBy: text('impersonated_by')
+  impersonatedBy: text("impersonated_by"),
 });
 
 export const account = pgTable("account", {
@@ -70,6 +70,19 @@ export const organization = pgTable("organization", {
   logo: text("logo"),
   createdAt: timestamp("created_at").notNull(),
   metadata: text("metadata"),
+});
+
+export const form = pgTable("form", {
+  id: text("id").primaryKey(),
+  organizationId: text("organization_id")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  createdAt: timestamp("created_at").notNull(),
+  createdBy: text("created_by")
+    .notNull()
+    .references(() => user.id),
+  updatedAt: timestamp("updated_at"),
 });
 
 export const member = pgTable("member", {

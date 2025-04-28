@@ -71,8 +71,6 @@ export default function UserProfile() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => {
-                    toast.success("Theme updated");
-
                     setTheme(resolvedTheme === "dark" ? "light" : "dark");
                 }}>
                     {resolvedTheme === "light" ? (

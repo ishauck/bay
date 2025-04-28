@@ -102,6 +102,7 @@ export default function LoginButton() {
                 className="md:w-72 w-68 shadow-sm" 
                 disabled={isLoading !== null || !isPasskeyAvailable} 
                 onClick={() => login("passkey")}
+                variant="outline"
             >
                 {isLoading == "passkey" ? <Loader2 className="w-4 h-4 ml-2 animate-spin" /> : <KeyRound className="w-4 h-4" />}
                 Login with Passkey

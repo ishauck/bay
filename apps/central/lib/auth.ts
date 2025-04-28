@@ -53,13 +53,17 @@ export const auth = betterAuth({
             data: organization,
           };
         },
-      },
+      }
     }),
     admin(),
     oAuthProxy(),
     nextCookies(),
     passkey({
       rpName: "Bay",
+      authenticatorSelection: {
+        userVerification: "discouraged",
+        
+      }
     }),
   ],
   socialProviders: {

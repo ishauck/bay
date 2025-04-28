@@ -89,7 +89,7 @@ export default function Workspace({ organization }: { organization: Organization
                         Copy Workspace Slug
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => {
-                        navigator.clipboard.writeText(organization.id);
+                        navigator.clipboard.writeText("org_" + organization.id);
                         toast.success("Workspace ID copied to clipboard");
                     }}>
                         <CopyIcon className="size-4" />

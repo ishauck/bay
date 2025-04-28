@@ -1,17 +1,20 @@
 'use client'
 import { useEffect, useState } from "react";
 import { useCurrentOrganization } from "@/hooks/use-current-org";
-import { notFound } from "next/navigation";
+import { notFound, usePathname } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import FormList from "./form-list";
+import Link from "next/link";
+
 export default function OrgPage() {
   const [mounted, setMounted] = useState(false);
   const org = useCurrentOrganization();
   const session = useSession();
   const isMobile = useIsMobile();
-
+  const pathname = usePathname();
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -53,26 +56,30 @@ export default function OrgPage() {
           <Button
             className="md:h-auto md:w-72 md:p-6 md:flex md:flex-col md:gap-1 md:items-center md:hover:bg-accent/50 md:transition-colors"
             variant={isMobile ? "default" : "outline"}
+            asChild
           >
-            {isMobile ? (
-              <>
-                <Plus />
-                <span>Create a new form</span>
-              </>
-            ) : (
-              <>
-                <div className="flex items-center gap-2">
-                  <Plus className="w-6 h-6 text-primary" />
-                  <h3 className="font-semibold text-base">Create a new form</h3>
-                </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Start from scratch or use a template
-                </p>
-              </>
-            )}
+            <Link href={`/app/${data.slug}/new/form?back=${encodeURIComponent(pathname)}`}>
+              {isMobile ? (
+                <>
+                  <Plus />
+                  <span>Create a new form</span>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center gap-2">
+                    <Plus className="w-6 h-6 text-primary" />
+                    <h3 className="font-semibold text-base">Create a new form</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Start from scratch or use a template
+                  </p>
+                </>
+              )}
+            </Link>
           </Button>
         </div>
       </div>
+      <FormList />
     </div>
   );
 }

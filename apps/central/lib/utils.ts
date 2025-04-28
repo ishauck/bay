@@ -6,3 +6,5 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export type SearchParams = { [key: string]: string | string[] | undefined }
+
+export const MAX_FORMS_PER_ORGANIZATION = 10;

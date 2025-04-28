@@ -7,12 +7,14 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { useState } from "react";
 import { useCurrentOrganization, useSetCurrentOrganizationSlug } from "@/hooks/use-current-org";
 import { useAppStore } from "../provider/app-store";
-
+import Link from "next/link"
+import { usePathname } from "next/navigation";
 export function OrganizationSwitcher() {
   const activeOrganization = useCurrentOrganization();
   const organizations = authClient.useListOrganizations();
   const setOrg = useSetCurrentOrganizationSlug();
   const setIsWorkspaceCreatorShowing = useAppStore((state) => state.setIsWorkspaceCreatorShowing);
+  const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(false);
 
   if (typeof window === 'undefined' || organizations.isPending || activeOrganization.isPending) {
@@ -102,9 +104,11 @@ export function OrganizationSwitcher() {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <Button className="flex-1">
-        <Plus className="w-4 h-4" />
-        Create Form
+      <Button className="flex-1" asChild>
+        <Link href={`/app/${activeOrganization.data?.slug}/new/form?back=${encodeURIComponent(pathname)}`}>
+          <Plus className="w-4 h-4" />
+          Create Form
+        </Link>
       </Button>
     </div>
   );

@@ -30,9 +30,9 @@ export function useSetCurrentOrganizationSlug() {
     const pathname = usePathname();
 
     return (orgSlug: string) => {
-        const parts = pathname.split('/app/acme/');
+        const parts = pathname.split('/app/');
         if (parts.length > 1) {
-            const remainingPath = parts[1];
+            const remainingPath = parts[1].split('/').slice(1).join('/');
             router.push(`/app/${orgSlug}/${remainingPath}`);
         } else {
             router.push(`/app/${orgSlug}`);
