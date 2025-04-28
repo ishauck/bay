@@ -19,6 +19,14 @@ export default function OrgPage() {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (org.data?.name) {
+      document.title = org.data.name;
+    }
+  }, [org.data?.name]);
+
+
+
   if (!mounted || org.isPending) {
     return (
       <div className="flex flex-col gap-4 w-full h-48 bg-accent/30 dark:bg-white/5 p-6 animate-pulse">
