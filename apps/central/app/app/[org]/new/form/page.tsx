@@ -46,9 +46,9 @@ export default function NewForm() {
                     ) : (
                         <Logo className="w-9" />
                     )}
-                    <div className="text-sm text-muted-foreground">
+                    <Link className="text-sm text-muted-foreground" href={`/app/${org.data?.slug}`}>
                         {org.data?.name}
-                    </div>
+                    </Link>
                     <div className="flex-1" />
                     <UserProfile />
                 </header>
