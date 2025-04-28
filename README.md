@@ -9,6 +9,7 @@
 Bay is (going to be) a Google Forms alternative.
 
 ## Tech Stack
+
 - Frameworks: [Next.JS](https://nextjs.org/)
 - Authentication: [Better Auth](https://www.better-auth.com/), Github/Google OAuth 2, and Passkeys
 - Styling: [TailwindCSS](https://tailwindcss.com/)
