@@ -11,6 +11,7 @@ import { notFound } from "next/navigation";
 import { FormTemplateCard } from "@/components/form-template-card";
 import useKeybind from "@/hooks/use-keybind";
 import NewFormSkeleton from "./skeleton";
+import { useEffect } from "react";
 
 export default function NewForm() {
     const searchParams = useSearchParams()
@@ -23,6 +24,12 @@ export default function NewForm() {
             router.push(backUrl)
         }
     })
+
+    useEffect(() => {
+        if (org.data?.name) {
+            document.title = `New Form - ${org.data.name}`;
+        }
+    }, [org.data?.name]);
 
     if (org.isPending) {
         return <NewFormSkeleton />
