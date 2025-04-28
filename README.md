@@ -1,18 +1,8 @@
 <div align="center">
-<svg width="80" height="80" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;fill:#fff">
-    <g transform="matrix(1,0,0,1,-73.0141,0)">
-        <g transform="matrix(1.01565,0,0,1.62167,-202.579,0)">
-            <clipPath id="_clip1">
-                <rect x="271.347" y="0" width="63.014" height="39.466"/>
-            </clipPath>
-            <g clip-path="url(#_clip1)">
-                <g transform="matrix(0.984595,0,0,0.616649,199.458,0)">
-                    <path d="M97.039,1.004C99.589,0.348 102.261,0 105.014,0C122.675,0 137.014,14.339 137.014,32C137.014,49.661 122.675,64 105.014,64C87.353,64 73.014,49.661 73.014,32C73.014,19.389 80.325,8.472 90.936,3.26L90.936,46.052L97.955,46.052L97.955,44.154C100.03,45.361 102.442,46.052 105.014,46.052C112.784,46.052 119.092,39.744 119.092,31.974C119.092,24.205 112.784,17.897 105.014,17.897C102.442,17.897 100.03,18.588 97.955,19.795L97.955,1.004L97.039,1.004ZM105.014,24.936C108.899,24.936 112.053,28.09 112.053,31.974C112.053,35.859 108.899,39.013 105.014,39.013C101.129,39.013 97.975,35.859 97.975,31.974C97.975,28.09 101.129,24.936 105.014,24.936Z"/>
-                </g>
-            </g>
-        </g>
-    </g>
-</svg>
+<picture>
+    <source srcset="media/logo-dark.png"  media="(prefers-color-scheme: dark)">
+    <img src="media/logo-light.png">
+</picture>
 <h1>Bay</h1>
 </div>
 
@@ -20,6 +10,9 @@ Bay is (going to be) a Google Forms alternative.
 
 ## Tech Stack
 - Frameworks: [Next.JS](https://nextjs.org/)
-- Authentication: [Better Auth](https://www.better-auth.com/), [Github OAuth 2](https://github.com/settings/developers)
+- Authentication: [Better Auth](https://www.better-auth.com/), Github/Google OAuth 2, and Passkeys
 - Styling: [TailwindCSS](https://tailwindcss.com/)
 - Database: [Neon Postgres](https://console.neon.tech/), [Upstash Redis](https://console.upstash.com)
+- Deployments: [Vercel](https://vercel.com)
+- UI: [ShadCN UI](https://ui.shadcn.com)
+- Package Manager: [Bun](https://bun.sh/)
