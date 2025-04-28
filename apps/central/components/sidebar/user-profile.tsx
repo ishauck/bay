@@ -14,7 +14,7 @@ import { LogOut, Sun, Moon } from "lucide-react";
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { toast } from "sonner";
+
 function SessionIcon() {
     const user = useSession()
     const userData = user.data?.user
