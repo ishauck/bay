@@ -22,7 +22,7 @@ export default function NewFormPage() {
             
             formCreated.current = true;
             const response = await createForm(`org_${org.data.id}`, {
-                name: "Untitled Form",
+                name: "Untitled Form"
             });
 
             if (response.error) {

@@ -30,7 +30,8 @@ export const CreatableForm = FormPartial.omit({
   organizationId: true, 
   createdAt: true, 
   createdBy: true, 
-  updatedAt: true 
+  updatedAt: true,
+  responseCount: true
 });
 
 // TypeScript type definitions derived from the Zod schemas
