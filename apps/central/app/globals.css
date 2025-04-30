@@ -114,6 +114,10 @@
   --sidebar-ring: #71717a;
 }
 
+@utility no-scrollbar {
+  @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

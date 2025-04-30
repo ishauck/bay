@@ -120,6 +120,7 @@ export async function POST(
     createdAt: new Date().toISOString(),
     createdBy: session.user.id,
     updatedAt: null,
+    responseCount: 0,
   } as const;
 
   const newForm = await createForm(orgObject.id, formData);

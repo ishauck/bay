@@ -1,6 +1,7 @@
 import { useFormList } from "@/hooks/api/form";
 import { useCurrentOrganization } from "@/hooks/use-current-org";
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
 export default function FormList() {
     const { data: org } = useCurrentOrganization();
     const { data, isLoading, error } = useFormList(org?.id ?? "");
@@ -24,16 +25,30 @@ export default function FormList() {
     }
 
     return (
-        <div className="flex flex-col gap-2">
-            <h2 className="text-2xl font-bold">Forms</h2>
+        <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold">Forms</h2>
+                <span className="text-sm text-muted-foreground">{data.data.length} forms</span>
+            </div>
             {data.data.length > 0 ? (
-                <ul>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {data.data.map((form) => (
-                        <li key={form.id}>{form.name}</li>
+                        <Link 
+                            key={form.id}
+                            href={`/app/${org?.slug}/forms/${form.id}`}
+                            className="flex flex-col gap-2 p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+                        >
+                            <h3 className="font-semibold">{form.name}</h3>
+                            <p className="text-sm text-muted-foreground line-clamp-2">
+                                Updated {form.updatedAt || "No description provided"}
+                            </p>
+                        </Link>
                     ))}
-                </ul>
+                </div>
             ) : (
-                <p className="text-muted-foreground">No forms to be seen!</p>
+                <div className="flex flex-col items-center justify-center p-8 rounded-lg border bg-card">
+                    <p className="text-muted-foreground">No forms to be seen!</p>
+                </div>
             )}
         </div>
     );

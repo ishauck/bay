@@ -1,11 +1,22 @@
-import { FormPartial } from "@/types/api/forms";
+import { FormPartial, FormSettableFields } from "@/types/api/forms";
 import { db } from "./drizzle";
 import { form, organization } from "./schema";
 import { eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
+import { deleteQuestions } from "./questions";
+
+export async function updateForm(id: string, data: FormSettableFields) {
+  return await db.update(form)
+    .set({
+      ...data,
+      createdAt: new Date(data.createdAt),
+      updatedAt: data.updatedAt ? new Date(data.updatedAt) : null
+    })
+    .where(eq(form.id, id))
+}
 
 export async function getForm(id: string) {
-  return await db.select().from(form).where(eq(form.id, id));
+  return await db.select().from(form).where(eq(form.id, id)).limit(1);
 }
 
 export async function getFormsByOrganizationId(orgId: string) {
@@ -63,4 +74,12 @@ export async function createForm(orgId: string, formData: Omit<FormPartial, 'id'
     console.error('Error creating form:', error);
     throw error;
   }
+}
+
+export async function deleteForm(id: string) {
+  if (id.startsWith("form_")) {
+    id = id.substring("form_".length);
+  }
+  await deleteQuestions(id);
+  return await db.delete(form).where(eq(form.id, id));
 }
