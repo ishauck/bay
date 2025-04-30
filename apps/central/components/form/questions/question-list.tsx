@@ -179,6 +179,7 @@ export function QuestionList({
                                             required: false
                                         })
                                         toast.success("Question added")
+                                        router.replace(`/app/${orgSlug}/forms/${formId.split('form_')[1]}?q=${questions.length}`)
                                     } catch (error) {
                                         console.error('Failed to add question:', error)
                                         toast.error("Failed to add question")

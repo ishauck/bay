@@ -5,8 +5,8 @@ export type QuestionType = z.infer<typeof QuestionType>;
 
 export const Question = z.object({
   type: QuestionType,
-  label: z.string(),
-  description: z.string().optional(),
+  label: z.string().max(50),
+  description: z.string().max(200).optional(),
   required: z.boolean(),
 });
 

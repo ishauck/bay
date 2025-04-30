@@ -84,6 +84,8 @@ export const form = pgTable("form", {
     .references(() => user.id),
   updatedAt: timestamp("updated_at"),
   responseCount: integer("response_count").notNull().default(0),
+  backgroundColor: text("background_color").notNull().default("#fff"),
+  textColor: text("text_color").notNull().default("#000"),
 });
 
 export const member = pgTable("member", {
