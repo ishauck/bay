@@ -127,6 +127,7 @@ export async function PATCH(
     ...result.data,
     createdAt: formObj.createdAt.toISOString(),
     updatedAt: formObj.updatedAt?.toISOString() ?? null,
+    backgroundType: formObj.backgroundType as "solid" | "image"
   };
 
   await updateForm(formId, updatedForm);
