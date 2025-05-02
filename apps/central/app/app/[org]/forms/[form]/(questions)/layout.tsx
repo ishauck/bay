@@ -35,7 +35,7 @@ export default function QuestionsLayout({
 
     const handleCreateQuestion = async (type: QuestionType) => {
         if (isCreatingQuestion) return;
-        
+
         setIsCreatingQuestion(true)
         try {
             await createQuestion({
@@ -58,8 +58,8 @@ export default function QuestionsLayout({
             <div className="flex-1 h-full flex relative items-center justify-center flex-col gap-4 text-muted-foreground animate-fade-in">
                 <div className="absolute top-2 left-2">
                     <QuestionAdder onSelect={handleCreateQuestion}>
-                        <Button 
-                            variant="outline" 
+                        <Button
+                            variant="outline"
                             disabled={isCreatingQuestion}
                             className="transition-all duration-300 hover:scale-105 active:scale-95"
                         >
@@ -80,51 +80,46 @@ export default function QuestionsLayout({
         )
     }
 
-    const QuestionList = isLoading ? (
-        <div className="animate-fade-in">
-            <QuestionListSkeleton />
-        </div>
-    ) : (() => {
-        if (!questions) {
-            return null
-        }
-
-        return (
+    let QuestionList: React.ReactNode;
+    if (isLoading) {
+        QuestionList = (
+            <div className="animate-fade-in">
+                <QuestionListSkeleton />
+            </div>
+        );
+    } else if (questions) {
+        QuestionList = (
             <div className="overflow-y-auto md:h-full animate-fade-in">
-                <QuestionListComponent 
-                    questions={questions} 
-                    orgId={`org_${currentOrg.data?.id}`} 
+                <QuestionListComponent
+                    questions={questions}
+                    orgId={`org_${currentOrg.data?.id}`}
                     orgSlug={currentOrg.data?.slug ?? ''}
-                    formId={`form_${form}`} 
+                    formId={`form_${form}`}
                 />
             </div>
-        )
-    })()
+        );
+    } else {
+        QuestionList = null;
+    }
 
     return (
         <div
             style={{ "--question-list-height": `${questionListHeight}px` } as React.CSSProperties}
             ref={questionListRef}
-            className="flex-1 h-full overflow-hidden flex md:flex-row flex-col w-full max-h-[calc(100vh-4rem)] transition-all duration-300"
+            className={`flex-1 h-full overflow-hidden flex w-full max-h-[calc(100vh-4rem)] transition-all duration-300 ${isMobile ? "flex-col" : "md:flex-row"}`}
         >
-            {isMobile ? (
-                <>
-                    <div className="flex-1 overflow-hidden transition-all duration-300">
-                        {children}
-                    </div>
-                    <div className="transition-all duration-300">
-                        {QuestionList}
-                    </div>
-                </>
-            ) : (
-                <>
-                    <div className="transition-all duration-300">
-                        {QuestionList}
-                    </div>
-                    <div className="flex-1 overflow-hidden transition-all duration-300">
-                        {children}
-                    </div>
-                </>
+            {!isMobile && (
+                <div className="transition-all duration-300">
+                    {QuestionList}
+                </div>
+            )}
+            <div className="flex-1 overflow-hidden transition-all duration-300">
+                {children}
+            </div>
+            {isMobile && (
+                <div className="transition-all duration-300">
+                    {QuestionList}
+                </div>
             )}
         </div>
     )
