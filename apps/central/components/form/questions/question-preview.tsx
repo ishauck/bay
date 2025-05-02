@@ -3,7 +3,7 @@ import { generateCssProperties, StyleOptions } from "@/types/api/form-style";
 import { useState } from "react";
 import useContrast from "@/hooks/use-contrast";
 import { QuestionTypes } from "@/types/api/form-questions";
-import { InlineEditableText } from "@/components/ui/inline-editable-text";
+import { InlineEditableText } from "@/components/form/questions/inline-editable-text";
 
 interface QuestionPreviewPropsBase {
     question: QuestionTypes;

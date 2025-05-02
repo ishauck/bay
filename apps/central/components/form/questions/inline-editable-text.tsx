@@ -1,8 +1,8 @@
 import { useState, useRef, useCallback } from "react";
 import { Pencil, Loader2, X, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Input } from "./input";
-import { Button } from "./button";
+import { Input } from "../../ui/input";
+import { Button } from "../../ui/button";
 
 interface InlineEditableTextProps {
   value: string;

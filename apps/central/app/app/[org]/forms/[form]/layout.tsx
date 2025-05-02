@@ -9,6 +9,7 @@ import { FormActions } from "@/components/form/form-actions"
 import { updateForm } from "@/lib/api/form"
 import { toast } from "sonner"
 import { useEffect, useState } from "react"
+import { FormNav } from "@/components/form/form-nav"
 
 export default function FormLayout({ children }: { children: React.ReactNode }) {
     const { form } = useFormSlug()
@@ -104,6 +105,7 @@ export default function FormLayout({ children }: { children: React.ReactNode }) 
                     onTitleChange={handleTitleChange}
                     isFormTitleLoading={isFormTitleLoading}
                 />
+                <FormNav org={org} form={data} />
                 <FormActions
                     formId={data.id}
                     createdAt={data.createdAt}
