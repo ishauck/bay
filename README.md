@@ -17,3 +17,9 @@ Bay is (going to be) a Google Forms alternative.
 - Deployments: [Vercel](https://vercel.com)
 - UI: [ShadCN UI](https://ui.shadcn.com)
 - Package Manager: [Bun](https://bun.sh/)
+
+## Roadmap
+1. Add form maker UI (see `ishauck/add-form-builder` branch)
+2. Add responses
+3. Form theming
+4. Custom domains
