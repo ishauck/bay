@@ -42,7 +42,7 @@ export function TitleEditor({ title, onTitleChange, isLoading, className = '' }:
     }
 
     return (
-        <div data-is-loading={isLoading} className={`group relative ${className}`}>
+        <div data-is-loading={isLoading} className={`group relative w-fit ${className}`}>
             {isEditing ? (
                 <input
                     ref={inputRef}

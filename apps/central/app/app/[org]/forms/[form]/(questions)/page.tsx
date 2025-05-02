@@ -17,6 +17,7 @@ export default function FormPage() {
     const currentOrg = useCurrentOrganization()
     const { form } = useFormSlug()
     const [isUpdatingLabel, setIsUpdatingLabel] = useState(false)
+    const [isUpdatingDescription, setIsUpdatingDescription] = useState(false)
 
     const { data: formData } = useForm(currentOrg.data?.id ?? '', `form_${form}`)
     const { data: questions } = useQuestions(`org_${currentOrg.data?.id}`, `form_${form}`)
@@ -42,6 +43,24 @@ export default function FormPage() {
         }
     }, [questionIndex, questions, updateQuestions]);
 
+    const handleDescriptionChange = useCallback(async (newDescription: string) => {
+        if (!questions) return;
+        setIsUpdatingDescription(true);
+        try {
+            const updatedQuestions = [...questions];
+            updatedQuestions[questionIndex] = {
+                ...updatedQuestions[questionIndex],
+                description: newDescription
+            };
+            await updateQuestions(updatedQuestions);
+        } catch (error) {
+            console.error('Failed to update question description:', error);
+            toast.error("Failed to update question description");
+        } finally {
+            setIsUpdatingDescription(false);
+        }
+    }, [questionIndex, questions, updateQuestions]);
+
     if (!formData || !questions) {
         return null;
     }
@@ -61,9 +80,9 @@ export default function FormPage() {
     }
 
     return (
-        <div className="w-full h-full flex flex-col items-center justify-center gap-2 p-4">
+        <div className="w-full h-full flex flex-col items-center justify-center gap-4 p-6 bg-background">
             <div className="w-11/12 md:w-5/6 h-auto lg:w-3/4 flex flex-col items-center justify-center gap-2 aspect-[1.564453125]">
-                <Slot className="w-full h-auto aspect-[1.7073170732]">
+                <Slot className="w-full h-auto aspect-[1.7073170732] flex flex-col justify-center items-center">
                     {(() => {
                         switch (q.type) {
                             case "short_answer":
@@ -72,7 +91,9 @@ export default function FormPage() {
                                     colors={abstractStyleOptions(formData)}
                                     label={q.label}
                                     onLabelChange={handleLabelChange}
-                                    isLoading={isUpdatingLabel}
+                                    description={q.description}
+                                    onDescriptionChange={handleDescriptionChange}
+                                    isLoading={isUpdatingLabel || isUpdatingDescription}
                                 />
                             case "long_answer":
                                 return <LongAnswerQuestionPreview 
@@ -80,12 +101,14 @@ export default function FormPage() {
                                     colors={abstractStyleOptions(formData)}
                                     label={q.label}
                                     onLabelChange={handleLabelChange}
-                                    isLoading={isUpdatingLabel}
+                                    description={q.description}
+                                    onDescriptionChange={handleDescriptionChange}
+                                    isLoading={isUpdatingLabel || isUpdatingDescription}
                                 />
                         }
                     })()}
                 </Slot>
-                <div className="w-full flex items-center justify-between">
+                <div className="w-full flex items-center justify-between mt-4">
                     <div className="flex items-center gap-2">
                         <span className="text-sm font-mono text-primary">
                             {questionIndex + 1}

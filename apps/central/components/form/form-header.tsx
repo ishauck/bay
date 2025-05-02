@@ -16,7 +16,7 @@ export function FormHeader({ org, formName, onTitleChange, isFormTitleLoading }:
             <Link href={`/app/${org?.slug}`}>
                 <Logo className="size-12" />
             </Link>
-            <div>
+            <div className="w-fit">
                 <TitleEditor
                     title={formName}
                     onTitleChange={onTitleChange}
