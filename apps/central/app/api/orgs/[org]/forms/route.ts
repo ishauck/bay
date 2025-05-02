@@ -121,6 +121,9 @@ export async function POST(
     createdBy: session.user.id,
     updatedAt: null,
     responseCount: 0,
+    backgroundType: "solid",
+    backgroundValue: "#ffffff",
+    textColor: "#000000",
   } as const;
 
   const newForm = await createForm(orgObject.id, formData);
