@@ -7,6 +7,7 @@ import {
   createQuestion,
   getQuestions,
   updateQuestions,
+  deleteQuestion,
 } from "@/lib/api/questions";
 import { QuestionList, QuestionTypes } from "@/types/api/form-questions";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -90,6 +91,29 @@ export function useUpdateQuestions(orgId: string, formId: string) {
       return res.data;
     } catch (error) {
       console.error("Error updating questions:", error);
+      throw error;
+    }
+  };
+}
+
+export function useDeleteQuestion(orgId: string, formId: string) {
+  const queryClient = useQueryClient();
+  const processedOrgId = processOrgId(orgId);
+
+  return async (questionIndex: number) => {
+    try {
+      const res = await deleteQuestion(processedOrgId, formId, questionIndex);
+      if (res.error) {
+        throw new Error(res.error.message);
+      }
+      queryClient.setQueryData([
+        "questions",
+        processedOrgId,
+        formId,
+      ], res.data);
+      return res.data;
+    } catch (error) {
+      console.error("Error deleting question:", error);
       throw error;
     }
   };
