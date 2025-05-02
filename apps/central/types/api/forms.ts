@@ -1,8 +1,8 @@
 import { generatePaginatedResponse } from "../utils";
 import { z } from "zod";
-
+import { StyleOptions } from "./form-style";
 // Base form schema containing all possible form fields
-export const FormPartial = z.object({
+export const FormPartial = StyleOptions.extend({
   id: z.string(),
   organizationId: z.string(),
   name: z.string().max(40),

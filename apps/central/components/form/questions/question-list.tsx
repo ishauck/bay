@@ -157,8 +157,7 @@ export function QuestionList({
                 {(provided: DroppableProvided) => (
                     <div
                         className={cn(
-                            "w-full h-64 border-t md:h-full md:w-64 md:border-t-0 p-4 flex flex-col gap-2",
-                            "md:overflow-y-auto"
+                            "w-full h-64 border-t md:h-full md:w-64 md:border-t-0 p-4 flex flex-col gap-2"
                         )}
                         role="list"
                         aria-label="Questions list"
@@ -198,14 +197,14 @@ export function QuestionList({
                         </div>
                         <div
                             className={cn(
-                                "flex-1 relative no-scrollbar",
-                                isMobile ? "overflow-x-auto snap-x snap-mandatory" : "overflow-y-auto"
+                                "flex-1 min-h-0 h-full",
+                                isMobile ? "overflow-x-auto snap-x snap-mandatory no-scrollbar" : "overflow-y-auto no-scrollbar"
                             )}
                         >
                             <div
                                 className={cn(
-                                    "flex gap-2",
-                                    isMobile ? "flex-row h-full" : "flex-col"
+                                    "flex gap-2 h-full",
+                                    isMobile ? "flex-row" : "flex-col"
                                 )}
                             >
                                 {questions.map((question, idx) => (

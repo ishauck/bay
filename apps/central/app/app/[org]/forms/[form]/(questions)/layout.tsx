@@ -90,7 +90,7 @@ export default function QuestionsLayout({
         }
 
         return (
-            <div className="h-(--question-list-height) overflow-y-auto animate-fade-in">
+            <div className="overflow-y-auto md:h-full animate-fade-in">
                 <QuestionListComponent 
                     questions={questions} 
                     orgId={`org_${currentOrg.data?.id}`} 
