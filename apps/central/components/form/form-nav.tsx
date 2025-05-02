@@ -4,17 +4,17 @@ import { motion, AnimatePresence, LayoutGroup } from "motion/react"
 import { Organization } from "@/types/org"
 import { FormPartial } from "@/types/api/forms"
 import { Badge } from "../ui/badge"
-
+import { Pencil, List, Settings } from "lucide-react"
 const TABS = [
-  { label: "Editor", id: "editor" },
-  { label: "Responses", id: "responses" },
-  { label: "Settings", id: "settings" },
+    { label: "Editor", id: "editor", icon: <Pencil /> },
+    { label: "Responses", id: "responses", icon: <List /> },
+    { label: "Settings", id: "settings", icon: <Settings /> },
 ]
 
 const transition = {
-  type: "tween",
-  ease: "easeOut",
-  duration: 0.15,
+    type: "tween",
+    ease: "easeOut",
+    duration: 0.15,
 }
 
 function getTabIndexFromPath(path: string, orgSlug: string, formId: string) {
@@ -55,10 +55,9 @@ export function FormNav({ org, form }: { org: Organization | null | undefined, f
         if (idx !== selectedTab) {
             setSelectedTab(idx)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pathname, orgSlug, formId])
+    }, [pathname, orgSlug, formId, selectedTab])
 
-    if (!org || !form) return null
+    if (!org || !form) return null;
 
     const handleTabClick = (i: number) => {
         setSelectedTab(i)
@@ -78,9 +77,12 @@ export function FormNav({ org, form }: { org: Organization | null | undefined, f
                             onClick={() => handleTabClick(i)}
                         >
                             <span className="z-20 flex items-center gap-2">
-                                {item.label}
+                                <div className="size-4 items-center justify-center flex md:hidden">
+                                    {item.icon}
+                                </div>
+                                <span className="sr-only md:not-sr-only">{item.label}</span>
                                 {item.id === "responses" && (
-                                    <Badge>
+                                    <Badge className="hidden md:block">
                                         {responseCount}
                                         <span className="sr-only">responses</span>
                                     </Badge>
