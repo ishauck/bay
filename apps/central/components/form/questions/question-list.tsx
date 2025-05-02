@@ -11,6 +11,7 @@ import { QuestionAdder } from "@/components/form/questions/question-adder"
 import { PlusIcon, GripVertical } from "lucide-react"
 import { toast } from "sonner"
 import { useRouter, useSearchParams } from "next/navigation"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 export function QuestionListSkeleton() {
     return (
@@ -46,6 +47,52 @@ function QuestionListItem({ question, index, isSelected, onSelect, dragHandlePro
         }
     }, [handleClick])
 
+    if (!isMobile) {
+        return (
+            <Button
+                variant="ghost"
+                className={cn(
+                    "flex items-center justify-between h-8 w-full group",
+                    isSelected && "ring-2 ring-primary",
+                )}
+                asChild
+            >
+                <div tabIndex={0} onClick={handleClick} onKeyDown={handleKeyDown}>
+                    {!isMobile && (
+                        <span className="text-xs text-muted-foreground mr-2 font-mono w-2">{index + 1}</span>
+                    )}
+                    <div className="flex gap-2 flex-1 w-20 text-muted-foreground group-hover:text-foreground">
+                        <span className="truncate font-normal">{question.label}</span>
+                    </div>
+                    <div className="flex items-center justify-end gap-2">
+                        {(() => {
+                            const type = questionTypes.find(t => t.type === question.type)
+                            return (
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <div className="size-3">
+                                            {type?.icon}
+                                        </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>{type?.name}</TooltipContent>
+                                </Tooltip>
+                            )
+                        })()}
+                        <div
+                            className={cn(
+                                "text-muted-foreground",
+                                "cursor-grab active:cursor-grabbing"
+                            )}
+                            {...dragHandleProps}
+                        >
+                            <GripVertical className="size-4" />
+                        </div>
+                    </div>
+                </div>
+            </Button>
+        )
+    }
+
     return (
         <div
             onClick={handleClick}
@@ -63,7 +110,8 @@ function QuestionListItem({ question, index, isSelected, onSelect, dragHandlePro
                     "flex-1 md:h-30 w-full rounded-md border flex flex-col gap-2 relative",
                     "cursor-grab active:cursor-grabbing",
                     "transition-transform active:scale-[0.98]",
-                    "hover:bg-muted/50"
+                    "hover:bg-muted/50",
+                    "bg-muted"
                 )}
                 onClick={handleClick}
                 onKeyDown={handleKeyDown}

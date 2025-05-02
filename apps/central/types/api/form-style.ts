@@ -14,8 +14,16 @@ export function abstractStyleOptions(options: FormPartial) {
   return StyleOptions.parse(options);
 }
 
-export function generateCssProperties(options: StyleOptions, applyStyle: boolean = true) {
+export function generateCssProperties(options: StyleOptions, applyMode: 'directly' | 'as-css-var' | 'none' = 'as-css-var') {
   const isDark = contrast(options.backgroundValue);
+
+  if (applyMode === 'directly') {
+    const base: React.CSSProperties = {
+      background: options.backgroundType === "image" ? `url(${options.backgroundValue})` : options.backgroundValue,
+      color: options.textColor,
+    };
+    return base;
+  }
 
   const base: React.CSSProperties & {
     '--question-background': string;
@@ -33,7 +41,7 @@ export function generateCssProperties(options: StyleOptions, applyStyle: boolean
     base['--question-background'] = `url(${options.backgroundValue})`;
   }
 
-  if (applyStyle) {
+  if (applyMode !== 'none') {
     base['background'] = `var(--question-background)`;
     base['color'] = `var(--question-text-color)`;
   }
