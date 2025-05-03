@@ -12,6 +12,7 @@ import { LexicalEditorConfig } from '@/constants';
 import { EditorSetter } from './plugins/EditorSetter';
 import { SerializedLexicalState } from '@/types/api/form-data';
 import { EditorDataSetter } from './plugins/EditorDataSetter';
+import { AllowNewlineAtEndPlugin } from './plugins/AllowNewlineAtEndPlugin';
 
 // Catch any errors that occur during Lexical updates and log them
 // or throw them as needed. If you don't throw them, Lexical will
@@ -30,13 +31,13 @@ export function Editor({ editable = true, defaultData }: { editable: boolean, de
   const editorContainerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div ref={editorContainerRef} className="h-full flex flex-col flex-1 relative">
+    <div ref={editorContainerRef} className="flex flex-col flex-1 relative">
       <LexicalComposer initialConfig={initialConfig}>
         <RichTextPlugin
           contentEditable={
             <ContentEditable
               className={cn(
-                "h-full",
+                "h-fit",
                 "mt-4",
                 "flex-1",
                 "focus:outline-none"
@@ -56,6 +57,7 @@ export function Editor({ editable = true, defaultData }: { editable: boolean, de
         <HistoryPlugin />
         <AutoFocusPlugin />
         <CustomDataSuggestionPlugin />
+        <AllowNewlineAtEndPlugin />
         <EditorSetter />
         <EditorDataSetter defaultData={defaultData} />
       </LexicalComposer>

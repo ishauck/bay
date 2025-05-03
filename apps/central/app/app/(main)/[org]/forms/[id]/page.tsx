@@ -15,16 +15,15 @@ export default function FormPage() {
     const { data: form, isLoading, error } = useForm(org.data?.id || "", id)
     const { data: formData, isLoading: formDataLoading, error: formDataError } = useFormData(org.data?.id || "", id)
 
-    if (isLoading || formDataLoading) {
+    if (isLoading || formDataLoading || !org.data) {
         return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
-                <div className="spinner" style={{ marginBottom: 12, width: 32, height: 32, border: '4px solid #eee', borderTop: '4px solid #333', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                <div className="w-8 h-8 mb-3 border-4 border-solid border-muted-foreground/20 border-t-muted-foreground rounded-full animate-spin" />
                 <span>Loading form...</span>
-                <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
             </div>
         )
     }
-    if (error || formDataError) {
+    if (error || formDataError || !org.data) {
         console.error(error, formDataError)
         return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
@@ -45,7 +44,7 @@ export default function FormPage() {
         )
     }
 
-    if (!form || !formData) {
+    if (!form || !formData || !org.data) {
         return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
                 <h2>Form not found</h2>
@@ -55,6 +54,6 @@ export default function FormPage() {
     }
 
     return (
-        <FormEditor formData={formData} className="h-screen" form={form} />
+        <FormEditor formData={formData} form={form} organization={org.data} />
     )
 }

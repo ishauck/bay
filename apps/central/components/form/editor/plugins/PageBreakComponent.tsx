@@ -3,20 +3,16 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { useLexicalNodeSelection } from '@lexical/react/useLexicalNodeSelection';
 import { mergeRegister } from "@lexical/utils";
 import { $getNodeByKey, COMMAND_PRIORITY_LOW, SELECT_ALL_COMMAND } from "lexical";
-import { InfoIcon } from "lucide-react";
 import React, { useEffect } from "react";
 import { $isPageBreakNode, PageBreakNode } from "./PageBreakNode";
-import { Switch } from "@/components/ui/switch";
-import { Tooltip, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
-import { TooltipTrigger } from "@/components/ui/tooltip";
+
 
 export interface PageBreakProps {
     name: string;
-    isThankYouPage: boolean;
     nodeKey: string;
 }
 
-export default function PageBreak({ isThankYouPage, name, nodeKey }: PageBreakProps) {
+export default function PageBreak({ name, nodeKey }: PageBreakProps) {
     const [editor] = useLexicalComposerContext();
 
     const isEditable = editor.isEditable();
@@ -127,30 +123,6 @@ export default function PageBreak({ isThankYouPage, name, nodeKey }: PageBreakPr
                 <span className="text-sm text-muted-foreground">{name}</span>
             )}
             <Separator className="flex-1 border-1" />
-            <div className="flex flex-row items-center justify-center gap-2">
-                <span className="text-sm text-muted-foreground">Thank you page</span>
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger className="cursor-pointer">
-                            <InfoIcon className="w-4 h-4 text-muted-foreground" />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-xs">
-                            <p>Whether to treat this page as a thank you page, thanking the user for submitting the form.</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-                {isEditable && (
-                    <Switch
-                        checked={isThankYouPage}
-                        onCheckedChange={(checked) => {
-                            withPageBreakNode((node) => {
-                                node.setIsThankYouPage(checked);
-                            });
-                        }}
-                        className="cursor-pointer"
-                    />
-                )}
-            </div>
         </div>
     );
 }

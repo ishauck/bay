@@ -13,4 +13,4 @@ export const LexicalEditorConfig = {
     InputNode,
     HiddenFieldNode,
   ],
-}; 
+};

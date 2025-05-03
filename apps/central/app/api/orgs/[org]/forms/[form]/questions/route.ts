@@ -89,8 +89,6 @@ export async function PUT(
 
   const body = await req.json();
 
-  console.log(body);
-
   const result = validateLexicalState(body);
 
   if (!result) {

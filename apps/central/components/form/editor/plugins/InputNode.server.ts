@@ -64,6 +64,10 @@ export class InputNode extends DecoratorNode<null> {
     updateDOM(): false {
         return false;
     }
+
+    decorate(): null {
+        return null;
+    }
 }
 
 export function $createInputNode(label: string, placeholder: string, type: 'short-answer' | 'long-answer' = 'short-answer'): InputNode {

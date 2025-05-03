@@ -74,7 +74,7 @@ export default function HiddenFieldComponent({ value, nodeKey }: { value: string
     }
 
     return (
-        <div className="flex flex-row items-center justify-between gap-2">
+        <div className="flex flex-row items-center justify-between gap-2 my-3">
             <Input
                 ref={inputRef}
                 value={value}

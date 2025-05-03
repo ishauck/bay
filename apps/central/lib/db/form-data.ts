@@ -1,3 +1,4 @@
+import { FormDefaultData } from "@/constants";
 import { db as redis } from "@/lib/redis";
 import { SerializedLexicalState, FormData } from "@/types/api/form-data";
 
@@ -11,7 +12,7 @@ export async function createFormData(
 
   const formData: FormData = {
     id: formId,
-    questions: questions ?? null,
+    questions: questions ?? FormDefaultData,
   };
 
   const data = await redis.set(`form_data:${formId}`, formData);
@@ -28,7 +29,6 @@ export async function getFormData(formId: string) {
     formId = formId.slice(5);
   }
   const formData = await redis.get<FormData>(`form_data:${formId}`);
-  console.log(formData);
   return formData;
 }
 

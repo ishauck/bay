@@ -43,18 +43,18 @@ export default function InputComponent({ label, placeholder, type, nodeKey }: { 
 
     const hasChanges = newLabel !== label || newPlaceholder !== placeholder;
 
-    return <div data-is-editable={isEditable} data-type={type} className="group w-full sm:w-1/2 md:w-1/3 data-[type=long-answer]:w-full my-4">
+    return <div data-is-editable={isEditable} data-type={type} className="group w-full sm:w-1/2 md:w-1/3 data-[type=long-answer]:w-full my-4 pointer-events-none">
         <div className="flex flex-row items-center justify-between group-data-[is-editable=true]:mb-2">
-            <Label className="flex-1">{label}</Label>
+            <Label className="flex-1 pointer-events-auto">{label}</Label>
             {isEditable && (
                 <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
                     <AlertDialogTrigger asChild>
-                        <Button variant="outline" className="border-none shadow-none" size="iconXs">
+                        <Button variant="outline" className="border-none shadow-none pointer-events-auto" size="iconXs">
                             <EditIcon className="w-4 h-4" />
                             <span className="sr-only">Edit Input</span>
                         </Button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent>
+                    <AlertDialogContent className="pointer-events-auto">
                         <AlertDialogHeader>
                             <AlertDialogTitle>Edit Input</AlertDialogTitle>
                             <AlertDialogDescription>
@@ -102,9 +102,9 @@ export default function InputComponent({ label, placeholder, type, nodeKey }: { 
             )}
         </div>
         {type === 'short-answer' ? (
-            <Input readOnly={isEditable} placeholder={placeholder} />
+            <Input className="pointer-events-auto" readOnly={isEditable} placeholder={placeholder} />
         ) : (
-            <Textarea className="resize-y max-h-48" readOnly={isEditable} placeholder={placeholder} />
+            <Textarea className="resize-y max-h-48 pointer-events-auto" readOnly={isEditable} placeholder={placeholder} />
         )}
     </div>;
 }

@@ -11,26 +11,23 @@ import PageBreak from "./PageBreakComponent";
 export type SerializedPageBreakNode = Spread<
     {
         name: string;
-        isThankYouPage: boolean;
     },
     SerializedDecoratorBlockNode
 >;
 
 export class PageBreakNode extends DecoratorBlockNode {
     __name: string;
-    __is_thank_you_page: boolean;
 
     static getType(): string {
         return 'page-break';
     }
 
     static clone(node: PageBreakNode): PageBreakNode {
-        return new PageBreakNode(node.__is_thank_you_page, node.__name, node.__key);
+        return new PageBreakNode(node.__name, node.__key);
     }
 
-    constructor(isThankYouPage: boolean = false, name: string = "Untitled Page", key?: NodeKey) {
+    constructor(name: string = "Untitled Page", key?: NodeKey) {
         super('center', key);
-        this.__is_thank_you_page = isThankYouPage;
         this.__name = name;
     }
 
@@ -44,7 +41,7 @@ export class PageBreakNode extends DecoratorBlockNode {
 
 
     static importJSON(serializedNode: SerializedPageBreakNode): PageBreakNode {
-        return $createPageBreakNode(serializedNode.isThankYouPage, serializedNode.name).updateFromJSON(
+        return $createPageBreakNode(serializedNode.name).updateFromJSON(
             serializedNode,
         );
     }
@@ -52,8 +49,7 @@ export class PageBreakNode extends DecoratorBlockNode {
     exportJSON(): SerializedPageBreakNode {
         return {
             ...super.exportJSON(),
-            name: this.__name,
-            isThankYouPage: this.__is_thank_you_page,
+            name: this.__name
         };
     }
 
@@ -63,23 +59,16 @@ export class PageBreakNode extends DecoratorBlockNode {
         return self;
     }
 
-    setIsThankYouPage(isThankYouPage: boolean): PageBreakNode {
-        const self = this.getWritable();
-        self.__is_thank_you_page = isThankYouPage;
-        return self;
-    }
-
     decorate(): JSX.Element {
         return <PageBreak
             name={this.__name}
-            isThankYouPage={this.__is_thank_you_page}
             nodeKey={this.getKey()}
         />;
     }
 }
 
-export function $createPageBreakNode(isThankYouPage: boolean = false, name: string = "Untitled Page"): PageBreakNode {
-    return new PageBreakNode(isThankYouPage, name);
+export function $createPageBreakNode(name: string = "Untitled Page"): PageBreakNode {
+    return new PageBreakNode(name);
 }
 
 export function $isPageBreakNode(

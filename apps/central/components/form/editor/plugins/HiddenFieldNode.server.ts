@@ -44,6 +44,10 @@ export class HiddenFieldNode extends DecoratorNode<null> {
     updateDOM(): false {
         return false;
     }
+
+    decorate(): null {
+        return null;
+    }
 }
 
 export function $createHiddenFieldNode(value: string = ''): HiddenFieldNode {

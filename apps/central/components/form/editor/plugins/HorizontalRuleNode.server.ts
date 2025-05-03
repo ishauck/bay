@@ -37,6 +37,10 @@ export class HorizontalRuleNode extends DecoratorNode<null> {
       ...super.exportJSON(),
     };
   }
+
+  decorate(): null {
+    return null;
+  }
 }
 
 export function $createHorizontalRuleNode(): HorizontalRuleNode {
