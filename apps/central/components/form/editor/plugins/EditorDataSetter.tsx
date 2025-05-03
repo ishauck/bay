@@ -8,7 +8,9 @@ export function EditorDataSetter({ defaultData }: { defaultData: SerializedLexic
     useEffect(() => {
         if (editor && defaultData) {
             const state = editor.parseEditorState(defaultData);
-            editor.setEditorState(state);
+            editor.update(() => {
+                editor.setEditorState(state);
+            });
         }
     }, [defaultData, editor]);
 

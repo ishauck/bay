@@ -2,11 +2,12 @@ import { $createParagraphNode, $createTextNode } from "lexical";
 import { $createHeadingNode, $createQuoteNode } from '@lexical/rich-text';
 import { $createHorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import { CustomData } from "./types";
-import { BookOpenIcon, Heading1Icon, Heading2Icon, Heading3Icon, Heading4Icon, Heading5Icon, Heading6Icon, QuoteIcon, SlashIcon, TextCursorInputIcon, TextIcon } from "lucide-react";
+import { BookOpenIcon, EyeClosedIcon, Heading1Icon, Heading2Icon, Heading3Icon, Heading4Icon, Heading5Icon, Heading6Icon, QuoteIcon, SlashIcon, TextCursorInputIcon, TextIcon } from "lucide-react";
 import lorem from "@/lib/lorem";
 import { faker } from '@faker-js/faker';
 import { $createPageBreakNode } from "../PageBreakNode";
 import { $createInputNode } from "../InputNode";
+import { $createHiddenFieldNode } from "../HiddenFieldNode";
 
 
 export const groups = [
@@ -44,6 +45,7 @@ export const customData: CustomData[] = [
                 return {
                     node: headingNode,
                     atTopLevel: true,
+                    insertEmpty: true,
                 };
             }
         }
@@ -204,6 +206,7 @@ export const customData: CustomData[] = [
                 return {
                     node: hrNode,
                     atTopLevel: true,
+                    insertEmpty: true,
                 };
             }
         }
@@ -221,6 +224,25 @@ export const customData: CustomData[] = [
                 return {
                     node: pageBreakNode,
                     atTopLevel: true,
+                    insertEmpty: true,
+                };
+            }
+        }
+    },
+    {
+        key: "hidden-field",
+        metadata: {
+            id: "12",
+            group: "utility",
+            icon: <EyeClosedIcon />,
+            name: "Hidden Field",
+            description: "A hidden field used to grab search parameters.",
+            onSelect: () => {
+                const hiddenFieldNode = $createHiddenFieldNode();
+                return {
+                    node: hiddenFieldNode,
+                    atTopLevel: true,
+                    insertEmpty: true,
                 };
             }
         }

@@ -1,7 +1,7 @@
 import {
     LexicalTypeaheadMenuPlugin,
 } from "@lexical/react/LexicalTypeaheadMenuPlugin";
-import { TextNode } from "lexical";
+import { $createParagraphNode, LexicalNode, TextNode } from "lexical";
 import { JSX, useCallback, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { useBasicTypeaheadTriggerMatch } from "./useBasicTypeaheadTriggerMatch";
@@ -41,9 +41,15 @@ function insertTypeaheadNode({
     if (!nodeToReplace || !customNode) return;
     if (typeof customNode === 'object' && 'node' in customNode && customNode.atTopLevel) {
         // Insert at root level, after the current block
-        const root = nodeToReplace.getTopLevelElementOrThrow();
-        root.insertAfter(customNode.node);
+        let elem: LexicalNode = nodeToReplace;
+
+        while (elem && elem.getParent() && elem.getParent()?.getParent()) {
+            elem = elem.getParent() as LexicalNode;
+        }
+
+        elem.replace(customNode.node);
         customNode.node.selectStart();
+        customNode.node.insertAfter($createParagraphNode());
     } else if (isLexicalNode(customNode)) {
         nodeToReplace.replace(customNode);
     }

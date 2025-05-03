@@ -11,6 +11,7 @@ export type CustomData = {
     onSelect: (editor: LexicalEditor) => LexicalNode | {
       node: LexicalNode;
       atTopLevel?: boolean;
+      insertEmpty?: boolean;
     } | null;
   };
 };

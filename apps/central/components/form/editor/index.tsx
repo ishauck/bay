@@ -34,7 +34,7 @@ export function FormEditor({ className, form, formData, editable = true, ...prop
                 <h1 className="text-3xl md:text-4xl font-bold">{name}</h1>
             )}
             {editable && (
-                <EditorButtons />
+                <EditorButtons orgId={form.organizationId} formId={form.id} />
             )}
             <Editor defaultData={formData.questions} editable={editable} />
         </div>

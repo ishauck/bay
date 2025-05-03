@@ -1,4 +1,5 @@
-'use client'
+"use client";
+import { HiddenFieldNode } from "@/components/form/editor/plugins/HiddenFieldNode";
 import { InputNode } from "@/components/form/editor/plugins/InputNode";
 import { PageBreakNode } from "@/components/form/editor/plugins/PageBreakNode";
 import { InitialConfigType } from "@lexical/react/LexicalComposer";
@@ -79,5 +80,12 @@ const DefaultThemeSettings: EditorThemeClasses = {
 
 export const LexicalEditorConfig: Partial<InitialConfigType> = {
   theme: DefaultThemeSettings,
-  nodes: [HeadingNode, QuoteNode, HorizontalRuleNode, PageBreakNode, InputNode],
+  nodes: [
+    HeadingNode,
+    QuoteNode,
+    HorizontalRuleNode,
+    PageBreakNode,
+    InputNode,
+    HiddenFieldNode,
+  ],
 };

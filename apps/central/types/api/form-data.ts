@@ -5,8 +5,8 @@ export type SerializedLexicalState = never;
 
 export const FormData = z.object({
     id: z.string(),
-    questions: z.any().optional().refine((data) => {
-        return data === null || validateLexicalState(data);
+    questions: z.any().refine((data) => {
+        return data == null || validateLexicalState(data);
     }, {
         message: "Invalid lexical state"
     })
