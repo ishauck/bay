@@ -56,7 +56,7 @@ export default function PageBreak({ isThankYouPage, name, nodeKey }: PageBreakPr
                         }
                         return true;
                     }
-                    
+
                     // If this is a programmatic SELECT_ALL_COMMAND (no payload)
                     if (!payload) {
                         // Don't select our node if it's already selected
@@ -139,14 +139,17 @@ export default function PageBreak({ isThankYouPage, name, nodeKey }: PageBreakPr
                         </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
-                <Switch
-                    checked={isThankYouPage}
-                    onCheckedChange={(checked) => {
-                        withPageBreakNode((node) => {
-                            node.setIsThankYouPage(checked);
-                        });
-                    }}
-                />
+                {isEditable && (
+                    <Switch
+                        checked={isThankYouPage}
+                        onCheckedChange={(checked) => {
+                            withPageBreakNode((node) => {
+                                node.setIsThankYouPage(checked);
+                            });
+                        }}
+                        className="cursor-pointer"
+                    />
+                )}
             </div>
         </div>
     );

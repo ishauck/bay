@@ -41,7 +41,10 @@ export const customData: CustomData[] = [
                 const headingNode = $createHeadingNode("h1");
                 headingNode.append($createTextNode("New Title"));
 
-                return headingNode;
+                return {
+                    node: headingNode,
+                    atTopLevel: true,
+                };
             }
         }
     },
@@ -57,7 +60,10 @@ export const customData: CustomData[] = [
                 const headingNode = $createHeadingNode("h2");
                 headingNode.append($createTextNode("New Title"));
 
-                return headingNode;
+                return {
+                    node: headingNode,
+                    atTopLevel: true,
+                };
             }
         }
     },
@@ -195,7 +201,10 @@ export const customData: CustomData[] = [
             description: "A horizontal rule",
             onSelect: () => {
                 const hrNode = $createHorizontalRuleNode();
-                return hrNode;
+                return {
+                    node: hrNode,
+                    atTopLevel: true,
+                };
             }
         }
     },
@@ -209,7 +218,10 @@ export const customData: CustomData[] = [
             description: "A page break",
             onSelect: () => {
                 const pageBreakNode = $createPageBreakNode();
-                return pageBreakNode;
+                return {
+                    node: pageBreakNode,
+                    atTopLevel: true,
+                };
             }
         }
     },

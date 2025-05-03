@@ -18,6 +18,38 @@ const log = (...args: unknown[]): void => {
     }
 };
 
+function isLexicalNode(node: unknown): node is import("lexical").LexicalNode {
+    return (
+        typeof node === "object" &&
+        node !== null &&
+        typeof (node as { getType?: () => string }).getType === "function" &&
+        typeof (node as { getKey?: () => string }).getKey === "function"
+    );
+}
+
+// Utility function to handle insertion logic
+function insertTypeaheadNode({
+    nodeToReplace,
+    customNode,
+    closeMenu,
+}: {
+    editor: import("lexical").LexicalEditor,
+    nodeToReplace: TextNode | null,
+    customNode: import("lexical").LexicalNode | { node: import("lexical").LexicalNode; atTopLevel?: boolean } | null,
+    closeMenu: () => void,
+}) {
+    if (!nodeToReplace || !customNode) return;
+    if (typeof customNode === 'object' && 'node' in customNode && customNode.atTopLevel) {
+        // Insert at root level, after the current block
+        const root = nodeToReplace.getTopLevelElementOrThrow();
+        root.insertAfter(customNode.node);
+        customNode.node.selectStart();
+    } else if (isLexicalNode(customNode)) {
+        nodeToReplace.replace(customNode);
+    }
+    closeMenu();
+}
+
 export default function CustomDataSuggestionPlugin(): JSX.Element | null {
     const [editor] = useLexicalComposerContext();
     const [queryString, setQueryString] = useState<string | null>(null);
@@ -38,6 +70,7 @@ export default function CustomDataSuggestionPlugin(): JSX.Element | null {
         [checkForTriggerMatch, editor]
     );
 
+    // Refactored onSelectOption to use the utility
     const onSelectOption = useCallback(
         (
             selectedOption: CustomTypeaheadOption,
@@ -46,10 +79,12 @@ export default function CustomDataSuggestionPlugin(): JSX.Element | null {
         ) => {
             editor.update(() => {
                 const customNode = selectedOption.metadata.onSelect(editor);
-                if (nodeToReplace && customNode) {
-                    nodeToReplace.replace(customNode);
-                }
-                closeMenu();
+                insertTypeaheadNode({
+                    editor,
+                    nodeToReplace,
+                    customNode,
+                    closeMenu,
+                });
             });
         },
         [editor]
@@ -110,7 +145,7 @@ export default function CustomDataSuggestionPlugin(): JSX.Element | null {
 
         return anchorElementRef.current && options.length
             ? createPortal(
-                <div className="bg-popover text-popover-foreground rounded-md overflow-hidden shadow gap-0.5 overflow-y-auto w-fit min-w-60 max-w-screen-sm! max-h-48 md:max-h-64 no-scrollbar animate-in fade-in-80 zoom-in-90 slide-in-from-top-2 slide-in-from-left-2 duration-300" >
+                <div className="bg-popover text-popover-foreground rounded-md overflow-hidden shadow gap-0.5 overflow-y-auto w-fit min-w-60 max-w-screen-sm! max-h-48 md:max-h-64 no-scrollbar" >
                     <ul>
                         {(() => {
                             let globalIndex = 0;

@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { createForm, getFormsByOrganizationId } from "@/lib/db/form";
 import { RestError } from "@/lib/error";
-import { MAX_FORMS_PER_ORGANIZATION } from "@/lib/utils";
+import { MAX_FORMS_PER_ORGANIZATION } from "@/constants";
 import { CreatableForm } from "@/types/api/forms";
 
 export async function GET(

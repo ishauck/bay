@@ -55,7 +55,7 @@ export class InputNode extends DecoratorNode<ReactNode> {
         };
     }
 
-    importJSON(serializedNode: SerializedInputNode): InputNode {
+    static importJSON(serializedNode: SerializedInputNode): InputNode {
         return $createInputNode(serializedNode.label, serializedNode.placeholder, serializedNode.inputType);
     }
 

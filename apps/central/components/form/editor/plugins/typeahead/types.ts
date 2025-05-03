@@ -8,6 +8,9 @@ export type CustomData = {
     icon: React.ReactNode;
     name: string;
     description?: string;
-    onSelect: (editor: LexicalEditor) => LexicalNode | null;
+    onSelect: (editor: LexicalEditor) => LexicalNode | {
+      node: LexicalNode;
+      atTopLevel?: boolean;
+    } | null;
   };
 };
