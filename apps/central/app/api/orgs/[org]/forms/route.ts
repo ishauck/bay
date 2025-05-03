@@ -46,7 +46,9 @@ export async function GET(
   const offset = (page - 1) * limit;
 
   const forms = await getFormsByOrganizationId(orgObject.id);
-  const paginatedForms = forms.slice(offset, offset + limit).map((form) => form.form);
+  const paginatedForms = forms
+    .slice(offset, offset + limit)
+    .map((form) => form.form);
   const totalPages = Math.ceil(forms.length / limit);
 
   return Response.json({
@@ -101,7 +103,13 @@ export async function POST(
   const forms = await getFormsByOrganizationId(orgObject.id);
   if (forms.length >= MAX_FORMS_PER_ORGANIZATION) {
     return Response.json(
-      new RestError("too_many_forms", "You have reached the maximum number of forms (" + MAX_FORMS_PER_ORGANIZATION + ")", 400).toJSON(),
+      new RestError(
+        "too_many_forms",
+        "You have reached the maximum number of forms (" +
+          MAX_FORMS_PER_ORGANIZATION +
+          ")",
+        400
+      ).toJSON(),
       { status: 400 }
     );
   }
@@ -110,7 +118,11 @@ export async function POST(
 
   if (!form.success) {
     return Response.json(
-      new RestError("invalid_request", "The request body is not a valid form", 400).toJSON(),
+      new RestError(
+        "invalid_request",
+        "The request body is not a valid form",
+        400
+      ).toJSON(),
       { status: 400 }
     );
   }

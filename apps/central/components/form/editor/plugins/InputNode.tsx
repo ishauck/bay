@@ -1,0 +1,82 @@
+import { DecoratorNode, LexicalNode, NodeKey, SerializedLexicalNode, Spread } from "lexical";
+import { JSX, ReactNode } from "react";
+import InputComponent from "./InputComponent";
+
+type SerializedInputNode = Spread<{
+    label: string;
+    placeholder: string;
+    inputType: 'short-answer' | 'long-answer';
+}, SerializedLexicalNode>
+
+export class InputNode extends DecoratorNode<ReactNode> {
+    __label: string;
+    __placeholder: string;
+    __inputType: 'short-answer' | 'long-answer';
+
+    static getType(): string {
+        return 'input';
+    }
+
+    static clone(node: InputNode): InputNode {
+        return new InputNode(node.__label, node.__placeholder, node.__inputType, node.__key);
+    }
+
+    constructor(label: string, placeholder: string, type: 'short-answer' | 'long-answer' = 'short-answer', key?: NodeKey) {
+        super(key);
+        this.__label = label;
+        this.__placeholder = placeholder;
+        this.__inputType = type;
+    }
+
+    setLabel(label: string): InputNode {
+        const self = this.getWritable();
+        self.__label = label;
+        return self;
+    }
+
+    setPlaceholder(placeholder: string): InputNode {
+        const self = this.getWritable();
+        self.__placeholder = placeholder;
+        return self;
+    }
+
+    setType(type: 'short-answer' | 'long-answer'): InputNode {
+        const self = this.getWritable();
+        self.__inputType = type;
+        return self;
+    }
+
+    exportJSON(): SerializedInputNode {
+        return {
+            ...super.exportJSON(),
+            label: this.__label,
+            placeholder: this.__placeholder,
+            inputType: this.__inputType,
+        };
+    }
+
+    importJSON(serializedNode: SerializedInputNode): InputNode {
+        return $createInputNode(serializedNode.label, serializedNode.placeholder, serializedNode.inputType);
+    }
+
+    createDOM(): HTMLElement {
+        return document.createElement('div');
+    }
+
+    updateDOM(): false {
+        return false;
+    }
+
+    decorate(): JSX.Element {
+        return <InputComponent nodeKey={this.__key} label={this.__label} type={this.__inputType} placeholder={this.__placeholder} />;
+    }
+}
+
+
+export function $createInputNode(label: string, placeholder: string, type: 'short-answer' | 'long-answer' = 'short-answer'): InputNode {
+    return new InputNode(label, placeholder, type);
+}
+
+export function $isInputNode(node: LexicalNode | null | undefined): node is InputNode {
+    return node instanceof InputNode;
+}

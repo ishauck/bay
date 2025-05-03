@@ -83,6 +83,7 @@ export const form = pgTable("form", {
     .notNull()
     .references(() => user.id),
   updatedAt: timestamp("updated_at"),
+  responseCount: integer("response_count").notNull().default(0),
 });
 
 export const member = pgTable("member", {

@@ -1,1 +1,0 @@
-ALTER TABLE "user" ADD COLUMN "scope" integer DEFAULT 0 NOT NULL;

@@ -49,7 +49,7 @@ export default function OrgPage() {
   }
 
   return (
-    <div className="p-6 max-w-4xl">
+    <div className="p-6">
       <div className="space-y-4">
         <div className="space-y-3">
           <h1 className="text-4xl font-bold tracking-tight">

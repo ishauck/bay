@@ -122,3 +122,36 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+.editor-heading-h1 {
+  @apply text-4xl font-bold;
+}
+
+.editor-heading-h2 {
+  @apply text-3xl font-bold;
+}
+
+.editor-heading-h3 {
+  @apply text-2xl font-bold;
+}
+
+.editor-heading-h4 {
+  @apply text-xl font-bold;
+}
+
+.editor-heading-h5 {
+  @apply text-lg font-bold;
+}
+
+.editor-heading-h6 {
+  @apply text-base font-bold;
+}
+
+.editor-quote {
+  @apply border-l-4 border-border pl-3;
+}
+
+@utility no-scrollbar {
+  @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
+}

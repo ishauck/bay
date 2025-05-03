@@ -38,13 +38,14 @@ export async function getFormsByOrganizationSlug(slug: string) {
     .innerJoin(organization, eq(form.organizationId, organization.id))
     .where(eq(organization.slug, slug));
 }
-export async function createForm(orgId: string, formData: Omit<FormPartial, 'id' | 'organizationId'>) {
+export async function createForm(orgId: string, formData: Omit<FormPartial, 'id' | 'organizationId' | 'responseCount'>) {
   console.log('createForm called with orgId:', orgId, 'formData:', formData);
   const id = nanoid();
   
   const formValues = {
     id,
     organizationId: orgId,
+    responseCount: 0,
     ...formData,
   };
   console.log('Attempting to create form with values:', formValues);

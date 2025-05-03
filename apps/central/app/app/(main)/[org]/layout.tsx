@@ -38,7 +38,7 @@ export default function OrgLayout({
         notFound();
     }
 
-    return <div>
+    return <div className="h-full flex flex-col overflow-hidden">
         <header className="w-full border-b border-border p-1 h-12 md:flex hidden items-center">
             <div className="flex items-center justify-between">
                 <Button variant="ghost" className="text-base" asChild>
@@ -56,6 +56,8 @@ export default function OrgLayout({
                 </Button>
             </div>
         </header>
-        {children}
+        <main className="flex-1 overflow-y-auto">
+            {children}
+        </main>
     </div>
 }
