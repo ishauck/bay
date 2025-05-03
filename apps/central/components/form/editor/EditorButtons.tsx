@@ -70,6 +70,7 @@ function PreviewButton({ org, formId, ...props }: ButtonProps) {
     );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function PublishButton({ org, formId, ...props }: ButtonProps) {
     // No props or state needed for now
     return (
