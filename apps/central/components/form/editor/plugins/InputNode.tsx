@@ -7,13 +7,13 @@ import { BaseSerializedFieldNode } from "./types";
 type SerializedInputNode = Spread<BaseSerializedFieldNode & {
     label: string;
     placeholder: string;
-    inputType: 'short-answer' | 'long-answer';
+    inputType: 'short-answer' | 'long-answer' | 'email' | 'phone' | 'number';
 }, SerializedLexicalNode>
 
 export class InputNode extends DecoratorNode<ReactNode> {
     __label: string;
     __placeholder: string;
-    __inputType: 'short-answer' | 'long-answer';
+    __inputType: 'short-answer' | 'long-answer' | 'email' | 'phone' | 'number';
     __required: boolean;
     __questionId: string;
     static getType(): string {
@@ -24,7 +24,7 @@ export class InputNode extends DecoratorNode<ReactNode> {
         return new InputNode(node.__label, node.__placeholder, node.__inputType, node.__required, node.__questionId, node.__key);
     }
 
-    constructor(label: string, placeholder: string, type: 'short-answer' | 'long-answer' = 'short-answer', required: boolean = false, questionId?: string, key?: NodeKey) {
+    constructor(label: string, placeholder: string, type: 'short-answer' | 'long-answer' | 'email' | 'phone' | 'number' = 'short-answer', required: boolean = false, questionId?: string, key?: NodeKey) {
         super(key);
         this.__label = label;
         this.__placeholder = placeholder;
@@ -45,7 +45,7 @@ export class InputNode extends DecoratorNode<ReactNode> {
         return self;
     }
 
-    setType(type: 'short-answer' | 'long-answer'): InputNode {
+    setType(type: 'short-answer' | 'long-answer' | 'email' | 'phone' | 'number'): InputNode {
         const self = this.getWritable();
         self.__inputType = type;
         return self;
@@ -88,7 +88,7 @@ export class InputNode extends DecoratorNode<ReactNode> {
 }
 
 
-export function $createInputNode(label: string, placeholder: string, type: 'short-answer' | 'long-answer' = 'short-answer', required: boolean = false, questionId?: string): InputNode {
+export function $createInputNode(label: string, placeholder: string, type: 'short-answer' | 'long-answer' | 'email' | 'phone' | 'number' = 'short-answer', required: boolean = false, questionId?: string): InputNode {
     return new InputNode(label, placeholder, type, required, questionId);
 }
 

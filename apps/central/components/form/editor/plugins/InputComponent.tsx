@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $getNodeByKey } from "lexical";
-import { EditIcon } from "lucide-react";
+import { EditIcon, HashIcon, MailIcon, PhoneIcon, TextCursorInputIcon } from "lucide-react";
 import { $isInputNode, InputNode } from "./InputNode";
 import { useState, useCallback, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,11 +13,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useFormResponseStore } from "@/components/provider/form-response-store";
 import { TextResponse } from "@/types/response";
 import { NodeProps } from "./types";
+import { Slot } from "@radix-ui/react-slot";
+import { PhoneInput } from "@/components/ui/phone-input";
 
 type Props = NodeProps<{
     label: string;
     placeholder: string;
-    type: 'short-answer' | 'long-answer';
+    type: 'short-answer' | 'long-answer' | 'email' | 'phone' | 'number';
     required?: boolean;
 }>
 
@@ -127,30 +129,114 @@ export default function InputComponent({ label, placeholder, type, nodeKey, ques
                 </AlertDialog>
             )}
         </div>
-        {type === 'short-answer' ? (
-            <Input className="pointer-events-auto"
-                maxLength={100}
-                readOnly={isEditable}
-                placeholder={placeholder}
-                value={response?.response || ""}
-                onChange={(e) => respond({
-                    type: "short-answer",
-                    questionId: questionId,
-                    response: e.target.value,
-                })}
-            />
-        ) : (
-            <Textarea className="resize-y max-h-48 pointer-events-auto"
-                maxLength={1000}
-                readOnly={isEditable}
-                placeholder={placeholder}
-                value={response?.response || ""}
-                onChange={(e) => respond({
-                    type: "long-answer",
-                    questionId: questionId,
-                    response: e.target.value,
-                })}
-            />
-        )}
-    </div>;
+        <div className="flex flex-row items-center justify-between gap-2">
+            <Slot className="bg-transparent dark:bg-input/30 shadow-xs rounded-md size-9! border-input border flex items-center justify-center">
+                {(() => {
+                    switch (type) {
+                        case 'short-answer': {
+                            return (
+                                <div>
+                                    <TextCursorInputIcon className="w-4 h-4" />
+                                    <span className="sr-only">Short Answer</span>
+                                </div>
+                            )
+                        }
+                        case 'long-answer': {
+                            return null;
+                        }
+                        case 'email': {
+                            return (
+                                <div>
+                                    <MailIcon className="w-4 h-4" />
+                                    <span className="sr-only">Email</span>
+                                </div>
+                            )
+                        }
+                        case 'phone': {
+                            return (
+                                <div>
+                                    <PhoneIcon className="w-4 h-4" />
+                                    <span className="sr-only">Phone</span>
+                                </div>
+                            )
+                        }
+                        case 'number': {
+                            return (
+                                <div>
+                                    <HashIcon className="w-4 h-4" />
+                                    <span className="sr-only">Number</span>
+                                </div>
+                            )
+                        }
+                    }
+                })()}
+            </Slot>
+            <div className="flex-1">
+                {(() => {
+                    switch (type) {
+                        case 'short-answer': {
+                            return (
+                                <Input className="pointer-events-auto"
+                                    maxLength={100}
+                                    readOnly={isEditable}
+                                    placeholder={placeholder}
+                                    value={response?.response || ""}
+                                    onChange={(e) => respond({
+                                        type: "short-answer",
+                                        questionId: questionId,
+                                        response: e.target.value,
+                                    })}
+                                />
+                            )
+                        }
+                        case 'long-answer': {
+                            return (
+                                <Textarea className="resize-y max-h-48 pointer-events-auto"
+                                    maxLength={1000}
+                                    readOnly={isEditable}
+                                    placeholder={placeholder}
+                                    value={response?.response || ""}
+                                    onChange={(e) => respond({
+                                        type: "long-answer",
+                                        questionId: questionId,
+                                        response: e.target.value,
+                                    })}
+                                />
+                            )
+                        }
+                        case 'email': {
+                            return (
+                                <Input className="pointer-events-auto"
+                                    type="email"
+                                    readOnly={isEditable}
+                                    placeholder={placeholder}
+                                    value={response?.response || ""}
+                                    onChange={(e) => respond({
+                                        type: "email",
+                                        questionId: questionId,
+                                        response: e.target.value,
+                                    })}
+                                />
+                            )
+                        }
+                        case 'phone': {
+                            return (
+                                <PhoneInput
+                                    className="pointer-events-auto"
+                                    disabled={isEditable}
+                                    placeholder={placeholder}
+                                    value={response?.response || ""}
+                                    onChange={(value) => respond({
+                                        type: "phone",
+                                        questionId: questionId,
+                                        response: typeof value === 'string' ? value : (value || ""),
+                                    })}
+                                />
+                            )
+                        }
+                    }
+                })()}
+            </div>
+        </div>
+    </div >;
 }

@@ -21,6 +21,7 @@ import { useSubmitForm } from "@/hooks/use-sumbit-form"
 import { toast } from "sonner"
 import { FIELD_TYPES } from "@/constants/lexical/shared"
 import { BaseSerializedFieldNode } from "@/components/form/editor/plugins/types"
+import { Response } from "@/types/response"
 // Utility to split Lexical state into pages
 type SerializedPageBreakNode = SerializedLexicalNode & { type: 'page-break'; name?: string };
 
@@ -178,6 +179,12 @@ function FormPagePreviewWithButtons({ formData, form, organization }: FormPagePr
                                 const r = completeReqs.find((q) => q.questionId === id);
                                 setSelectedPage(r?.pageIndex ?? 0);
                                 toast.error(`There are still required questions that need to be answered.`);
+                                return;
+                            }
+
+                            const schema = Response.safeParse(response);
+                            if (!schema.success) {
+                                toast.error(schema.error.issues[0].message + "!");
                                 return;
                             }
 

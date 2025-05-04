@@ -5,13 +5,13 @@ import { BaseSerializedFieldNode } from "./types";
 type SerializedInputNode = Spread<BaseSerializedFieldNode & {
     label: string;
     placeholder: string;
-    inputType: 'short-answer' | 'long-answer';  
+    inputType: 'short-answer' | 'long-answer' | 'email' | 'phone' | 'number';
 }, SerializedLexicalNode>
 
 export class InputNode extends DecoratorNode<null> {
     __label: string;
     __placeholder: string;
-    __inputType: 'short-answer' | 'long-answer';
+    __inputType: 'short-answer' | 'long-answer' | 'email' | 'phone' | 'number';
     __required: boolean;
     __questionId: string;
 
@@ -23,7 +23,7 @@ export class InputNode extends DecoratorNode<null> {
         return new InputNode(node.__label, node.__placeholder, node.__inputType, node.__required, node.__questionId, node.__key);
     }
 
-    constructor(label: string, placeholder: string, type: 'short-answer' | 'long-answer' = 'short-answer', required: boolean = false, questionId?: string, key?: NodeKey) {
+    constructor(label: string, placeholder: string, type: 'short-answer' | 'long-answer' | 'email' | 'phone' | 'number' = 'short-answer', required: boolean = false, questionId?: string, key?: NodeKey) {
         super(key);
         this.__label = label;
         this.__placeholder = placeholder;
@@ -86,7 +86,7 @@ export class InputNode extends DecoratorNode<null> {
     }
 }
 
-export function $createInputNode(label: string, placeholder: string, type: 'short-answer' | 'long-answer' = 'short-answer', required: boolean = false, questionId?: string): InputNode {
+export function $createInputNode(label: string, placeholder: string, type: 'short-answer' | 'long-answer' | 'email' | 'phone' | 'number' = 'short-answer', required: boolean = false, questionId?: string): InputNode {
     return new InputNode(label, placeholder, type, required, questionId);
 }
 

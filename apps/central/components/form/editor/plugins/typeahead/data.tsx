@@ -2,7 +2,7 @@ import { $createParagraphNode, $createTextNode } from "lexical";
 import { $createHeadingNode, $createQuoteNode } from '@lexical/rich-text';
 import { $createHorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import { CustomData } from "./types";
-import { BookOpenIcon, EyeClosedIcon, Heading1Icon, Heading2Icon, Heading3Icon, Heading4Icon, Heading5Icon, Heading6Icon, QuoteIcon, RadioIcon, SlashIcon, TextCursorInputIcon, TextIcon } from "lucide-react";
+import { BookOpenIcon, EyeClosedIcon, HashIcon, Heading1Icon, Heading2Icon, Heading3Icon, Heading4Icon, Heading5Icon, Heading6Icon, MailIcon, PhoneIcon, QuoteIcon, RadioIcon, SlashIcon, TextCursorInputIcon, TextIcon } from "lucide-react";
 import lorem from "@/lib/lorem";
 import { faker } from '@faker-js/faker';
 import { $createPageBreakNode } from "../PageBreakNode";
@@ -195,9 +195,51 @@ export const customData: CustomData[] = [
         }
     },
     {
+        key: "email",
+        metadata: {
+            id: "11",
+            group: "questions",
+            icon: <MailIcon />,
+            name: "Email",
+            description: "An email question",
+            onSelect: () => {
+                const inputNode = $createInputNode("Label", "Placeholder", "email");
+                return inputNode;
+            }
+        }
+    },
+    {
+        key: "phone",
+        metadata: {
+            id: "12",
+            group: "questions",
+            icon: <PhoneIcon />,
+            name: "Phone",
+            description: "A phone question",
+            onSelect: () => {
+                const inputNode = $createInputNode("Label", "Placeholder", "phone");
+                return inputNode;
+            }
+        }
+    },
+    {
+        key: "number",
+        metadata: {
+            id: "13",
+            group: "questions",
+            icon: <HashIcon />,
+            name: "Number",
+            description: "A number question",
+            onSelect: () => {
+                const inputNode = $createInputNode("Label", "Placeholder", "number");
+                return inputNode;
+            }
+        }
+    },
+    {
         key: "hr",
         metadata: {
-            id: "10",
+            id: "14",
             group: "utility",
             icon: <SlashIcon />,
             name: "Horizontal Rule",
@@ -215,7 +257,7 @@ export const customData: CustomData[] = [
     {
         key: "page-break",
         metadata: {
-            id: "11",
+            id: "15",
             group: "utility",
             icon: <BookOpenIcon />,
             name: "Page Break",
@@ -233,7 +275,7 @@ export const customData: CustomData[] = [
     {
         key: "hidden-field",
         metadata: {
-            id: "12",
+            id: "16",
             group: "utility",
             icon: <EyeClosedIcon />,
             name: "Hidden Field",
@@ -251,7 +293,7 @@ export const customData: CustomData[] = [
     {
         key: "radio-option",
         metadata: {
-            id: "13",
+            id: "17",
             group: "questions",
             icon: <RadioIcon />,
             name: "Radio Option",

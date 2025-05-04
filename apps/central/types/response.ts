@@ -1,56 +1,111 @@
 import { z } from "zod";
-
-export const QuestionType = z.enum(["short-answer", "long-answer", "radio", "hidden"]);
+import { isValidPhoneNumber } from "libphonenumber-js";
+export const QuestionType = z.enum([
+  "short-answer",
+  "long-answer",
+  "email",
+  "phone",
+  "number",
+  "radio",
+  "hidden",
+]);
 
 export const QuestionResponse = z.object({
-    type: QuestionType,
-    questionId: z.string(),
-    response: z.any().optional(),
+  type: QuestionType,
+  questionId: z.string(),
+  response: z.any().optional(),
 });
 
 export const HiddenResponse = QuestionResponse.extend({
-    type: z.literal("hidden"),
-    response: z.string().optional(),
+  type: z.literal("hidden"),
+  response: z.string().optional(),
 });
 
 export const TextResponse = QuestionResponse.extend({
-    type: z.enum(["short-answer", "long-answer"]),
-    response: z.string().optional(),
+  type: z.enum(["short-answer", "long-answer", "email", "phone", "number"]),
+  response: z.string().optional(),
 });
 
 export const ShortAnswerResponse = TextResponse.extend({
-    type: z.literal("short-answer"),
-    response: z.string().max(100).optional(),
+  type: z.literal("short-answer"),
+  response: z.string().max(100).optional(),
 });
 
 export const LongAnswerResponse = TextResponse.extend({
-    type: z.literal("long-answer"),
-    response: z.string().max(1000).optional(),
+  type: z.literal("long-answer"),
+  response: z.string().max(1000).optional(),
+});
+
+export const EmailResponse = TextResponse.extend({
+  type: z.literal("email"),
+  response: z.string().email().optional(),
+});
+
+export const PhoneResponse = TextResponse.extend({
+  type: z.literal("phone"),
+  response: z
+    .string()
+    .optional()
+    .refine(
+      (val) => {
+        if (!val) return true;
+
+        return isValidPhoneNumber(val);
+      },
+      {
+        message: "Invalid phone number",
+      }
+    ),
+});
+
+export const NumberResponse = TextResponse.extend({
+  type: z.literal("number"),
+  response: z
+    .string()
+    .optional()
+    .refine(
+      (val) => {
+        if (!val) return true;
+
+        return !isNaN(Number(val));
+      },
+      {
+        message: "Invalid number",
+      }
+    ),
 });
 
 export const RadioResponse = QuestionResponse.extend({
-    type: z.literal("radio"),
-    response: z.object({
-        option: z.string(),
-        otherValue: z.string().optional(),
-    }).optional(),
+  type: z.literal("radio"),
+  response: z
+    .object({
+      option: z.string(),
+      otherValue: z.string().optional(),
+    })
+    .optional(),
 });
 
-
-export const AllowedResponse = ShortAnswerResponse.or(LongAnswerResponse).or(RadioResponse).or(HiddenResponse);
+export const AllowedResponse = ShortAnswerResponse.or(LongAnswerResponse)
+  .or(EmailResponse)
+  .or(PhoneResponse)
+  .or(NumberResponse)
+  .or(RadioResponse)
+  .or(HiddenResponse);
 
 export const Response = z.array(AllowedResponse);
 
 export const StoredResponse = z.object({
-    id: z.string(),
-    formId: z.string(),
-    submittedAt: z.string().datetime(),
-    submittedBy: z.string().optional(),
-    sender: z.object({
-        ip: z.string(),
-        userAgent: z.string().optional(),
-    }).optional(),
-    response: Response,
+  id: z.string(),
+  formId: z.string(),
+  submittedAt: z.string().datetime(),
+  submittedBy: z.string().optional(),
+  sender: z
+    .object({
+      ip: z.string(),
+      userAgent: z.string().optional(),
+    })
+    .optional(),
+  response: Response,
 });
 
 export type AllowedResponse = z.infer<typeof AllowedResponse>;

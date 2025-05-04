@@ -128,7 +128,10 @@ export function verifyResponse(
         const inputNode = child as InputNode;
         if (
           (response.type !== "short-answer" &&
-            response.type !== "long-answer") ||
+            response.type !== "long-answer" &&
+            response.type !== "email" &&
+            response.type !== "phone" &&
+            response.type !== "number") ||
           response.type !== inputNode.__inputType
         ) {
           console.error(
