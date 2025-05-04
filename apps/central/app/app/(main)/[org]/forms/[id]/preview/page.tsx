@@ -10,14 +10,18 @@ import { useFormData } from "@/hooks/api/form-data"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, ArrowRight, Check } from "lucide-react"
 import { useAppStore } from "@/components/provider/app-store"
-import { useEffect, useState, useMemo, useCallback, useRef } from "react"
+import { useEffect, useMemo, useCallback, useRef } from "react"
 import { FormData } from "@/types/form-data"
 import { FormPartial } from "@/types/forms"
 import { Organization } from "better-auth/plugins/organization"
 import type { SerializedEditorState, SerializedLexicalNode } from 'lexical'
 import { cn } from "@/lib/utils"
-import { FormResponseStoreProvider } from "@/components/provider/form-response-store"
-
+import { FormResponseStoreProvider, useFormResponseStore } from "@/components/provider/form-response-store"
+import { useSubmitForm } from "@/hooks/use-sumbit-form"
+import { toast } from "sonner"
+import { atom, useAtom } from "jotai"
+import { FIELD_TYPES } from "@/constants/lexical/shared"
+import { BaseSerializedFieldNode } from "@/components/form/editor/plugins/types"
 // Utility to split Lexical state into pages
 type SerializedPageBreakNode = SerializedLexicalNode & { type: 'page-break'; name?: string };
 
@@ -42,15 +46,52 @@ function splitLexicalStateIntoPages(lexicalState: SerializedEditorState<Serializ
     return pages;
 }
 
+// Utility to recursively flatten all nodes in a tree
+function isNodeWithChildren(node: SerializedLexicalNode): node is SerializedLexicalNode & { children: SerializedLexicalNode[] } {
+    return Array.isArray((node as { children?: unknown }).children);
+}
+
+function flattenNodes(nodes: SerializedLexicalNode[]): SerializedLexicalNode[] {
+    let result: SerializedLexicalNode[] = [];
+    for (const node of nodes) {
+        result.push(node);
+        if (isNodeWithChildren(node)) {
+            result = result.concat(flattenNodes(node.children));
+        }
+    }
+    return result;
+}
+
 interface FormPagePreviewWithButtonsProps {
     formData: FormData;
     form: FormPartial;
     organization: Organization;
 }
+
+export const selectedPageAtom = atom(0);
+
 function FormPagePreviewWithButtons({ formData, form, organization }: FormPagePreviewWithButtonsProps) {
-    const [selectedPage, setSelectedPage] = useState(0);
+    const [selectedPage, setSelectedPage] = useAtom(selectedPageAtom);
     const containerRef = useRef<HTMLDivElement>(null);
     const pages = useMemo(() => splitLexicalStateIntoPages(formData.questions), [formData]);
+    const { isSubmitting, submitForm } = useSubmitForm();
+    const clearRequired = useFormResponseStore((state) => state.clearRequired);
+    const markRequired = useFormResponseStore((state) => state.markRequired);
+    const requiredQuestions = useFormResponseStore((state) => state.requiredQuestions);
+    const response = useFormResponseStore((state) => state.response);
+    const router = useRouter();
+
+    useEffect(() => {
+        clearRequired();
+        pages.forEach((page, pageIndex) => {
+            flattenNodes(page.nodes).forEach((node) => {
+                if (FIELD_TYPES.includes(node.type) && node.type !== 'hidden-field') {
+                    const typedNode = node as (SerializedLexicalNode & BaseSerializedFieldNode);
+                    markRequired(typedNode.questionId, pageIndex, typedNode.required === true);
+                }
+            });
+        });
+    }, [pages, clearRequired, markRequired]);
 
     // Create a Lexical state for the selected page
     const pageState = useMemo(() => {
@@ -95,21 +136,22 @@ function FormPagePreviewWithButtons({ formData, form, organization }: FormPagePr
                         scrollToTop();
                         setSelectedPage((prev) => Math.max(prev - 1, 0));
                     }}
-                    disabled={selectedPage === 0}
+                    disabled={selectedPage === 0 || isSubmitting}
                 >
                     <ArrowLeft className="size-4 mr-2" />
                     Previous Page
                 </Button>
-                <div className="flex flex-row items-center gap-2">
+                <div className="hidden md:flex flex-row items-center gap-2">
                     {pages.map((page, index) => (
                         <div key={index} className="flex flex-row items-center gap-2">
                             <Button
                                 variant="custom"
                                 size="iconXs"
                                 data-selected={selectedPage === index}
+                                disabled={isSubmitting}
                                 className={cn(
                                     "rounded-full size-3 bg-muted text-muted-foreground cursor-pointer hover:bg-muted-foreground hover:text-background transition-all duration-200",
-                                    "data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground"
+                                    "data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground disabled:opacity-50"
                                 )}
                                 onClick={() => {
                                     scrollToTop();
@@ -122,9 +164,35 @@ function FormPagePreviewWithButtons({ formData, form, organization }: FormPagePr
                     ))}
                 </div>
                 <Button
-                    onClick={() => {
-                        scrollToTop();
-                        setSelectedPage((prev) => Math.min(prev + 1, pages.length - 1));
+                    disabled={isSubmitting}
+                    onClick={async () => {
+                        if (selectedPage === pages.length - 1) {
+                            const completeReqs = requiredQuestions.filter((q) => q.value);
+                            // required question ids
+                            const reqs = completeReqs.map((q) => q.questionId)
+                            // all reqs where responses contain an answer
+                            const answeredReqs = reqs.filter((r) => response.some((ar) => ar.questionId === r))
+                            const unansweredReqs = reqs.filter((r) => !answeredReqs.includes(r))
+
+                            if (unansweredReqs.length > 0) {
+                                const id = unansweredReqs[0];
+                                const r = completeReqs.find((q) => q.questionId === id);
+                                setSelectedPage(r?.pageIndex ?? 0);
+                                toast.error(`There are still required questions that need to be answered.`);
+                                return;
+                            }
+
+                            const res = await submitForm(form.id);
+                            if (res.error) {
+                                toast.error(res.error.message);
+                            }
+                            if (res.data) {
+                                router.push(`/forms/${form.id}/complete?org_slug=${organization.slug}&ref=preview&response_id=${res.data.id}&form_id=${form.id}`);
+                            }
+                        } else {
+                            scrollToTop();
+                            setSelectedPage((prev) => Math.min(prev + 1, pages.length - 1));
+                        }
                     }}
                 >
                     {selectedPage === pages.length - 1 ? <Check className="size-4 mr-2" /> : <ArrowRight className="size-4 mr-2" />}

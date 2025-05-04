@@ -1,11 +1,11 @@
 import { DecoratorNode, LexicalNode, NodeKey, SerializedLexicalNode, Spread } from "lexical";
 import { nanoid } from "nanoid";
-type SerializedInputNode = Spread<{
+import { BaseSerializedFieldNode } from "./types";
+
+type SerializedInputNode = Spread<BaseSerializedFieldNode & {
     label: string;
     placeholder: string;
-    inputType: 'short-answer' | 'long-answer';
-    required: boolean;
-    questionId: string;
+    inputType: 'short-answer' | 'long-answer';  
 }, SerializedLexicalNode>
 
 export class InputNode extends DecoratorNode<null> {

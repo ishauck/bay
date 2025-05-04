@@ -8,7 +8,7 @@ export const ERROR = {
     INVALID_STATE: "invalid-state",
 }
 
-function _getChildren(node: LexicalNode): LexicalNode[] {
+export function _getChildren(node: LexicalNode): LexicalNode[] {
     if (node instanceof ElementNode) {
         const children = node.getChildren();
         return children.map((child: LexicalNode) => {
@@ -41,9 +41,11 @@ export function getChildren(serialized: SerializedLexicalState): {
     });
 
     let root: RootNode | null = null;
+    let data: LexicalNode[] | null = null;
 
     editor.read(() => {
         root = $getRoot();
+        data = _getChildren(root);
     })
 
     if (!root) {
@@ -55,6 +57,6 @@ export function getChildren(serialized: SerializedLexicalState): {
 
     return {
         error: null,
-        data: _getChildren(root),
+        data: data,
     };
 }

@@ -1,11 +1,11 @@
 import { DecoratorNode, LexicalNode, NodeKey, SerializedLexicalNode, Spread } from "lexical";
 import { nanoid } from "nanoid";
-type SerializedRadioOptionNode = Spread<{
+import { BaseSerializedFieldNode } from "./types";
+
+type SerializedRadioOptionNode = Spread<BaseSerializedFieldNode & {
     label: string;
     options: string[];
     allowOther: boolean;
-    required: boolean;
-    questionId: string;
 }, SerializedLexicalNode>
 
 export class RadioOptionNode extends DecoratorNode<null> {

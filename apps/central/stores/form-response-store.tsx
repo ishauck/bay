@@ -5,6 +5,7 @@ import { devtools } from 'zustand/middleware'
 export type FormResponseState = {
     formId: string;
     response: AllowedResponse[];
+    requiredQuestions: { questionId: string; value: boolean; pageIndex: number }[];
 }
 
 export type FormResponseActions = {
@@ -12,6 +13,10 @@ export type FormResponseActions = {
     unrespond: (questionId: string) => void;
     updateResponse: (questionId: string, response: AllowedResponse) => void;
     setResponses: (response: AllowedResponse[]) => void;
+    setRequiredQuestions: (requiredQuestions: { questionId: string; pageIndex: number }[]) => void;
+    markRequired: (questionId: string, pageIndex: number, value?: boolean) => void;
+    isRequired: (questionId: string) => boolean;
+    clearRequired: () => void;
 }
 
 export type FormResponseStore = FormResponseState & FormResponseActions
@@ -19,6 +24,7 @@ export type FormResponseStore = FormResponseState & FormResponseActions
 export const defaultInitState: FormResponseState = {
     formId: '',
     response: [],
+    requiredQuestions: [],
 }
 
 export const createFormResponseStore = (
@@ -26,7 +32,7 @@ export const createFormResponseStore = (
 ) => {
     return createStore<FormResponseStore>()(
         devtools(
-            (set) => ({
+            (set, get) => ({
                 // Initialize with the provided initial state
                 ...initState,
 
@@ -60,6 +66,32 @@ export const createFormResponseStore = (
                     set(() => ({
                         response: response
                     })),
+
+                markRequired: (questionId: string, pageIndex: number, value: boolean = true) =>
+                    set((state) => {
+                        // Filter out any null/undefined values
+                        const filteredResponses = state.requiredQuestions.filter(Boolean);
+                        const exists = filteredResponses.some(r => r.questionId === questionId);
+                        if (exists) {
+                            return {
+                                requiredQuestions: filteredResponses.map(r =>
+                                    r.questionId === questionId ? { ...r, value } : r
+                                )
+                            };
+                        } else {
+                            return {
+                                requiredQuestions: [...filteredResponses, { questionId, value, pageIndex }]
+                            };
+                        }
+                    }),
+
+                clearRequired: () =>
+                    set(() => ({
+                        requiredQuestions: []
+                    })),
+
+                isRequired: (questionId: string) =>
+                    get().requiredQuestions.find(r => r.questionId === questionId)?.value || false,
             }),
             {
                 name: 'formResponseStore'

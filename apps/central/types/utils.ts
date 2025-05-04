@@ -29,3 +29,6 @@ export function generatePaginatedResponse<T>(type: z.ZodType<T>) {
     pagination: PaginationSchema,
   });
 }
+
+export type UnresolvedSearchParams = { [key: string]: string | string[] | undefined };
+export type SearchParams = Promise<UnresolvedSearchParams>;

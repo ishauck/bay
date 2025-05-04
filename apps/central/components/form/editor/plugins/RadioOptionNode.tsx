@@ -2,13 +2,12 @@ import { DecoratorNode, LexicalNode, NodeKey, SerializedLexicalNode, Spread } fr
 import { JSX, ReactNode } from "react";
 import RadioOptionComponent from "./RadioOptionComponent";
 import { nanoid } from "nanoid";
+import { BaseSerializedFieldNode } from "./types";
 
-type SerializedRadioOptionNode = Spread<{
+type SerializedRadioOptionNode = Spread<BaseSerializedFieldNode & {
     label: string;
     options: string[];
     allowOther: boolean;
-    required: boolean;
-    questionId: string;
 }, SerializedLexicalNode>
 
 export class RadioOptionNode extends DecoratorNode<ReactNode> {

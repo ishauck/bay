@@ -2,12 +2,12 @@ import { DecoratorNode, LexicalNode, NodeKey, SerializedLexicalNode, Spread } fr
 import { JSX, ReactNode } from "react";
 import InputComponent from "./InputComponent";
 import { nanoid } from "nanoid";
-type SerializedInputNode = Spread<{
+import { BaseSerializedFieldNode } from "./types";
+
+type SerializedInputNode = Spread<BaseSerializedFieldNode & {
     label: string;
     placeholder: string;
     inputType: 'short-answer' | 'long-answer';
-    required: boolean;
-    questionId: string;
 }, SerializedLexicalNode>
 
 export class InputNode extends DecoratorNode<ReactNode> {

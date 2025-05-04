@@ -41,6 +41,18 @@ export const AllowedResponse = ShortAnswerResponse.or(LongAnswerResponse).or(Rad
 
 export const Response = z.array(AllowedResponse);
 
+export const StoredResponse = z.object({
+    id: z.string(),
+    formId: z.string(),
+    submittedAt: z.string().datetime(),
+    submittedBy: z.string().optional(),
+    sender: z.object({
+        ip: z.string(),
+        userAgent: z.string().optional(),
+    }).optional(),
+    response: Response,
+});
+
 export type AllowedResponse = z.infer<typeof AllowedResponse>;
 export type QuestionResponse = z.infer<typeof QuestionResponse>;
 
@@ -51,3 +63,4 @@ export type LongAnswerResponse = z.infer<typeof LongAnswerResponse>;
 export type RadioResponse = z.infer<typeof RadioResponse>;
 
 export type Response = z.infer<typeof Response>;
+export type StoredResponse = z.infer<typeof StoredResponse>;

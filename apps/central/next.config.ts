@@ -3,6 +3,7 @@ import { withAxiom } from "next-axiom";
 const nextConfig: NextConfig = {
   experimental: {
     viewTransition: true,
+    reactCompiler: true,
   },
   redirects: async () => {
     return [

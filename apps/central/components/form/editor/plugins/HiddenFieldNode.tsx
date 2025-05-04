@@ -2,10 +2,11 @@ import { DecoratorNode, LexicalNode, NodeKey, SerializedLexicalNode, Spread } fr
 import { JSX, ReactNode } from "react";
 import HiddenFieldComponent from "./HiddenFieldComponent";
 import { nanoid } from "nanoid";
+import { BaseSerializedFieldNode } from "./types";
 
-type SerializedHiddenFieldNode = Spread<{
+type SerializedHiddenFieldNode = Spread<BaseSerializedFieldNode & {
+    required: false;
     value: string;
-    questionId: string;
 }, SerializedLexicalNode>
 
 export class HiddenFieldNode extends DecoratorNode<ReactNode> {
@@ -36,6 +37,7 @@ export class HiddenFieldNode extends DecoratorNode<ReactNode> {
         return {
             ...super.exportJSON(),
             value: this.__value,
+            required: false,
             questionId: this.__questionId,
         };
     }
