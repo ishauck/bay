@@ -105,7 +105,7 @@ function FormPagePreviewWithButtons({ formData, form, organization }: FormPagePr
                                 size="iconXs"
                                 data-selected={selectedPage === index}
                                 className={cn(
-                                    "rounded-full size-4 bg-muted text-muted-foreground cursor-pointer hover:bg-muted-foreground hover:text-background transition-all duration-200",
+                                    "rounded-full size-3 bg-muted text-muted-foreground cursor-pointer hover:bg-muted-foreground hover:text-background transition-all duration-200",
                                     "data-[selected=true]:bg-primary data-[selected=true]:text-primary-foreground"
                                 )}
                                 onClick={() => {

@@ -7,6 +7,7 @@ import { atom } from 'jotai';
 import { EditorButtons } from "./EditorButtons";
 import { FormData } from "@/types/api/form-data";
 import { Organization } from "better-auth/plugins/organization";
+import { FormEditorHeader } from "./FormEditorHeader";
 
 interface FormEditorProps extends React.HTMLAttributes<HTMLDivElement> {
     form: FormPartial;
@@ -17,36 +18,22 @@ interface FormEditorProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const editorAtom = atom<LexicalEditor | null>(null);
+export const isSavingAtom = atom<boolean>(false);
 
 export function FormEditor({ className, form, formData, organization, editable = true, customHeader = null, ...props }: FormEditorProps) {
     const [name, setName] = useState(form.name);
 
     return (
-        <div className={cn("p-6 h-fit flex flex-col gap-2", className)} {...props}>
+        <div className={cn("p-6 h-full flex flex-col gap-2", className)} {...props}>
             {customHeader ? (
                 customHeader
             ) : (
-                <>
-                    {editable ? (
-                        <input
-                            className={cn(
-                                "text-3xl md:text-4xl font-bold",
-                                "focus:outline-none placeholder:text-muted-foreground/70",
-                            )}
-                            placeholder="Untitled Form"
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
-                    ) : (
-                        <h1 className="text-3xl md:text-4xl font-bold">{name}</h1>
-                    )}
-                </>
+                <FormEditorHeader name={name} setName={setName} editable={editable} />
             )}
             {editable && (
                 <EditorButtons org={organization} formId={form.id} />
             )}
-            <Editor defaultData={formData.questions} editable={editable} />
+            <Editor defaultData={formData.questions} editable={editable} org={organization} formId={form.id} />
         </div>
     )
 }

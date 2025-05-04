@@ -13,6 +13,8 @@ import { EditorSetter } from './plugins/EditorSetter';
 import { SerializedLexicalState } from '@/types/api/form-data';
 import { EditorDataSetter } from './plugins/EditorDataSetter';
 import { AllowNewlineAtEndPlugin } from './plugins/AllowNewlineAtEndPlugin';
+import EditorAutosave from "./EditorAutosave";
+import { Organization } from 'better-auth/plugins/organization';
 
 // Catch any errors that occur during Lexical updates and log them
 // or throw them as needed. If you don't throw them, Lexical will
@@ -21,7 +23,7 @@ function onError(error: Error) {
   console.error(error);
 }
 
-export function Editor({ editable = true, defaultData }: { editable: boolean, defaultData: SerializedLexicalState | null }) {
+export function Editor({ editable = true, defaultData, org, formId }: { editable: boolean, defaultData: SerializedLexicalState | null, org: Organization, formId: string }) {
   const initialConfig: InitialConfigType = {
     ...LexicalEditorConfig,
     namespace: 'MyEditor',
@@ -60,6 +62,7 @@ export function Editor({ editable = true, defaultData }: { editable: boolean, de
         <AllowNewlineAtEndPlugin />
         <EditorSetter />
         <EditorDataSetter defaultData={defaultData} />
+        <EditorAutosave org={org} formId={formId} />
       </LexicalComposer>
     </div>
   );

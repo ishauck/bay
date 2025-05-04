@@ -38,7 +38,9 @@ export class HiddenFieldNode extends DecoratorNode<null> {
     }
 
     createDOM(): HTMLElement {
-        return document.createElement('div');
+        const div = document.createElement('div');
+        div.classList.add('pointer-events-none');
+        return div;
     }
 
     updateDOM(): false {

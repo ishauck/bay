@@ -2,6 +2,7 @@
 import { HiddenFieldNode } from "@/components/form/editor/plugins/HiddenFieldNode";
 import { InputNode } from "@/components/form/editor/plugins/InputNode";
 import { PageBreakNode } from "@/components/form/editor/plugins/PageBreakNode";
+import { RadioOptionNode } from "@/components/form/editor/plugins/RadioOptionNode";
 import { InitialConfigType } from "@lexical/react/LexicalComposer";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
@@ -87,5 +88,6 @@ export const LexicalEditorConfig: Partial<InitialConfigType> = {
     PageBreakNode,
     InputNode,
     HiddenFieldNode,
+    RadioOptionNode,
   ],
 };

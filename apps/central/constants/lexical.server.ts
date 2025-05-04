@@ -3,6 +3,7 @@ import { HorizontalRuleNode } from "@/components/form/editor/plugins/HorizontalR
 import { InputNode } from "@/components/form/editor/plugins/InputNode.server";
 import { HiddenFieldNode } from "@/components/form/editor/plugins/HiddenFieldNode.server";
 import { PageBreakNode } from "@/components/form/editor/plugins/PageBreakNode.server";
+import { RadioOptionNode } from "@/components/form/editor/plugins/RadioOptionNode.server";
 
 export const LexicalEditorConfig = {
   nodes: [
@@ -12,5 +13,6 @@ export const LexicalEditorConfig = {
     PageBreakNode,
     InputNode,
     HiddenFieldNode,
+    RadioOptionNode,
   ],
 };

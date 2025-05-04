@@ -10,6 +10,7 @@ import { SuggestionItem } from "./item";
 import { CustomData } from "./types";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { customData, groups } from "./data";
+import { motion } from "motion/react";
 
 // Add logging utility
 const log = (...args: unknown[]): void => {
@@ -151,7 +152,14 @@ export default function CustomDataSuggestionPlugin(): JSX.Element | null {
 
         return anchorElementRef.current && options.length
             ? createPortal(
-                <div className="bg-popover text-popover-foreground rounded-md overflow-hidden shadow gap-0.5 overflow-y-auto w-fit min-w-60 max-w-screen-sm! max-h-48 md:max-h-64 no-scrollbar" >
+                <motion.div
+                    key="typeahead-menu"
+                    initial={{ opacity: 0, scale: 0.95, x: -4, y: -4 }}
+                    animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, x: -4, y: -4 }}
+                    transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
+                    className="bg-popover text-popover-foreground rounded-md overflow-hidden shadow gap-0.5 overflow-y-auto w-fit min-w-60 max-w-screen-sm! max-h-48 md:max-h-64 no-scrollbar"
+                >
                     <ul>
                         {(() => {
                             let globalIndex = 0;
@@ -180,7 +188,7 @@ export default function CustomDataSuggestionPlugin(): JSX.Element | null {
                             ));
                         })()}
                     </ul>
-                </div>,
+                </motion.div>,
                 anchorElementRef.current
             )
             : null;

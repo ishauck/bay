@@ -2,12 +2,13 @@ import { $createParagraphNode, $createTextNode } from "lexical";
 import { $createHeadingNode, $createQuoteNode } from '@lexical/rich-text';
 import { $createHorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import { CustomData } from "./types";
-import { BookOpenIcon, EyeClosedIcon, Heading1Icon, Heading2Icon, Heading3Icon, Heading4Icon, Heading5Icon, Heading6Icon, QuoteIcon, SlashIcon, TextCursorInputIcon, TextIcon } from "lucide-react";
+import { BookOpenIcon, EyeClosedIcon, Heading1Icon, Heading2Icon, Heading3Icon, Heading4Icon, Heading5Icon, Heading6Icon, QuoteIcon, RadioIcon, SlashIcon, TextCursorInputIcon, TextIcon } from "lucide-react";
 import lorem from "@/lib/lorem";
 import { faker } from '@faker-js/faker';
 import { $createPageBreakNode } from "../PageBreakNode";
 import { $createInputNode } from "../InputNode";
 import { $createHiddenFieldNode } from "../HiddenFieldNode";
+import { $createRadioOptionNode } from "../RadioOptionNode";
 
 
 export const groups = [
@@ -247,4 +248,18 @@ export const customData: CustomData[] = [
             }
         }
     },
+    {
+        key: "radio-option",
+        metadata: {
+            id: "13",
+            group: "questions",
+            icon: <RadioIcon />,
+            name: "Radio Option",
+            description: "A radio option question",
+            onSelect: () => {
+                const radioOptionNode = $createRadioOptionNode("Label", ["Option 1", "Option 2"]);
+                return radioOptionNode;
+            }
+        }
+    }
 ];
