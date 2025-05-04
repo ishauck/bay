@@ -96,7 +96,7 @@ function SuccessState({ data }: { data: QueryParamsType }) {
                         </Link>
                     </Button>
                 )}
-                <p className="text-sm text-gray-500">Created with <a href="https://bayhq.org" target="_blank" rel="noopener noreferrer"><Logo className="h-[0.875rem] inline-block" /></a></p>
+                <p className="text-sm text-gray-500">Created with <Link href="/" target="_blank" rel="noopener noreferrer"><Logo className="h-[0.875rem] inline-block" /></Link></p>
             </div>
         </div>
     );
