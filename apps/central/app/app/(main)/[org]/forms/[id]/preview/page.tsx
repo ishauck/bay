@@ -19,7 +19,6 @@ import { cn } from "@/lib/utils"
 import { FormResponseStoreProvider, useFormResponseStore } from "@/components/provider/form-response-store"
 import { useSubmitForm } from "@/hooks/use-sumbit-form"
 import { toast } from "sonner"
-import { atom, useAtom } from "jotai"
 import { FIELD_TYPES } from "@/constants/lexical/shared"
 import { BaseSerializedFieldNode } from "@/components/form/editor/plugins/types"
 // Utility to split Lexical state into pages
@@ -68,10 +67,8 @@ interface FormPagePreviewWithButtonsProps {
     organization: Organization;
 }
 
-export const selectedPageAtom = atom(0);
 
 function FormPagePreviewWithButtons({ formData, form, organization }: FormPagePreviewWithButtonsProps) {
-    const [selectedPage, setSelectedPage] = useAtom(selectedPageAtom);
     const containerRef = useRef<HTMLDivElement>(null);
     const pages = useMemo(() => splitLexicalStateIntoPages(formData.questions), [formData]);
     const { isSubmitting, submitForm } = useSubmitForm();
@@ -79,6 +76,8 @@ function FormPagePreviewWithButtons({ formData, form, organization }: FormPagePr
     const markRequired = useFormResponseStore((state) => state.markRequired);
     const requiredQuestions = useFormResponseStore((state) => state.requiredQuestions);
     const response = useFormResponseStore((state) => state.response);
+    const selectedPage = useFormResponseStore((state) => state.selectedPage);
+    const setSelectedPage = useFormResponseStore((state) => state.setSelectedPage);
     const router = useRouter();
 
     useEffect(() => {

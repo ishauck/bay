@@ -6,6 +6,7 @@ export type FormResponseState = {
     formId: string;
     response: AllowedResponse[];
     requiredQuestions: { questionId: string; value: boolean; pageIndex: number }[];
+    selectedPage: number;
 }
 
 export type FormResponseActions = {
@@ -17,6 +18,7 @@ export type FormResponseActions = {
     markRequired: (questionId: string, pageIndex: number, value?: boolean) => void;
     isRequired: (questionId: string) => boolean;
     clearRequired: () => void;
+    setSelectedPage: (pageIndex: number | ((prev: number) => number)) => void;
 }
 
 export type FormResponseStore = FormResponseState & FormResponseActions
@@ -25,6 +27,7 @@ export const defaultInitState: FormResponseState = {
     formId: '',
     response: [],
     requiredQuestions: [],
+    selectedPage: 0,
 }
 
 export const createFormResponseStore = (
@@ -92,6 +95,11 @@ export const createFormResponseStore = (
 
                 isRequired: (questionId: string) =>
                     get().requiredQuestions.find(r => r.questionId === questionId)?.value || false,
+
+                setSelectedPage: (pageIndex: number | ((prev: number) => number)) =>
+                    set((state) => ({
+                        selectedPage: typeof pageIndex === 'function' ? pageIndex(state.selectedPage) : pageIndex
+                    })),
             }),
             {
                 name: 'formResponseStore'
