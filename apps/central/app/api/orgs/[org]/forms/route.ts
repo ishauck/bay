@@ -132,6 +132,8 @@ export async function POST(
     createdAt: new Date().toISOString(),
     createdBy: session.user.id,
     updatedAt: null,
+    isActive: true,
+    nonAcceptingMessage: "This form is not currently accepting responses.",
   } as const;
 
   const newForm = await createForm(orgObject.id, formData);
