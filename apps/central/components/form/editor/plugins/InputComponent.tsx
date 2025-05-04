@@ -9,20 +9,23 @@ import { EditIcon } from "lucide-react";
 import { $isInputNode, InputNode } from "./InputNode";
 import { useState, useCallback, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 
-export default function InputComponent({ label, placeholder, type, nodeKey }: { label: string, placeholder: string, type: 'short-answer' | 'long-answer', nodeKey: string }) {
+export default function InputComponent({ label, placeholder, type, nodeKey, required }: { label: string, placeholder: string, type: 'short-answer' | 'long-answer', nodeKey: string, required?: boolean }) {
     const [editor] = useLexicalComposerContext();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [newLabel, setNewLabel] = useState(label);
     const [newPlaceholder, setNewPlaceholder] = useState(placeholder);
+    const [newRequired, setNewRequired] = useState(!!required);
 
     // Sync state with props when dialog opens
     useEffect(() => {
         if (dialogOpen) {
             setNewLabel(label);
             setNewPlaceholder(placeholder);
+            setNewRequired(!!required);
         }
-    }, [dialogOpen, label, placeholder]);
+    }, [dialogOpen, label, placeholder, required]);
 
     const isEditable = editor.isEditable();
 
@@ -41,11 +44,13 @@ export default function InputComponent({ label, placeholder, type, nodeKey }: { 
         );
     }, [editor, nodeKey]);
 
-    const hasChanges = newLabel !== label || newPlaceholder !== placeholder;
+    const hasChanges = newLabel !== label || newPlaceholder !== placeholder || newRequired !== !!required;
 
     return <div data-is-editable={isEditable} data-type={type} className="group w-full sm:w-1/2 md:w-1/3 data-[type=long-answer]:w-full my-4 pointer-events-none">
         <div className="flex flex-row items-center justify-between mb-2">
-            <Label className="flex-1 pointer-events-auto">{label}</Label>
+            <Label className="flex-1 pointer-events-auto">
+                {label} {required && <span className="text-red-500 ml-1" title="Required">*</span>}
+            </Label>
             {isEditable && (
                 <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
                     <AlertDialogTrigger asChild>
@@ -80,6 +85,14 @@ export default function InputComponent({ label, placeholder, type, nodeKey }: { 
                                     aria-label="Input placeholder"
                                 />
                             </div>
+                            <div className="flex items-center gap-2 mt-2">
+                                <Checkbox
+                                    id={`required-toggle-${nodeKey}`}
+                                    checked={newRequired}
+                                    onCheckedChange={checked => setNewRequired(!!checked)}
+                                />
+                                <Label htmlFor={`required-toggle-${nodeKey}`}>Required</Label>
+                            </div>
                         </div>
                         <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -88,6 +101,7 @@ export default function InputComponent({ label, placeholder, type, nodeKey }: { 
                                     withInputNode((node) => {
                                         node.setLabel(newLabel);
                                         node.setPlaceholder(newPlaceholder);
+                                        node.setRequired(newRequired);
                                     });
                                     setDialogOpen(false);
                                 }}

@@ -6,26 +6,29 @@ type SerializedInputNode = Spread<{
     label: string;
     placeholder: string;
     inputType: 'short-answer' | 'long-answer';
+    required: boolean;
 }, SerializedLexicalNode>
 
 export class InputNode extends DecoratorNode<ReactNode> {
     __label: string;
     __placeholder: string;
     __inputType: 'short-answer' | 'long-answer';
+    __required: boolean;
 
     static getType(): string {
         return 'input';
     }
 
     static clone(node: InputNode): InputNode {
-        return new InputNode(node.__label, node.__placeholder, node.__inputType, node.__key);
+        return new InputNode(node.__label, node.__placeholder, node.__inputType, node.__required, node.__key);
     }
 
-    constructor(label: string, placeholder: string, type: 'short-answer' | 'long-answer' = 'short-answer', key?: NodeKey) {
+    constructor(label: string, placeholder: string, type: 'short-answer' | 'long-answer' = 'short-answer', required: boolean = false, key?: NodeKey) {
         super(key);
         this.__label = label;
         this.__placeholder = placeholder;
         this.__inputType = type;
+        this.__required = required;
     }
 
     setLabel(label: string): InputNode {
@@ -46,17 +49,24 @@ export class InputNode extends DecoratorNode<ReactNode> {
         return self;
     }
 
+    setRequired(required: boolean): InputNode {
+        const self = this.getWritable();
+        self.__required = required;
+        return self;
+    }
+
     exportJSON(): SerializedInputNode {
         return {
             ...super.exportJSON(),
             label: this.__label,
             placeholder: this.__placeholder,
             inputType: this.__inputType,
+            required: this.__required,
         };
     }
 
     static importJSON(serializedNode: SerializedInputNode): InputNode {
-        return $createInputNode(serializedNode.label, serializedNode.placeholder, serializedNode.inputType);
+        return $createInputNode(serializedNode.label, serializedNode.placeholder, serializedNode.inputType, serializedNode.required);
     }
 
     createDOM(): HTMLElement {
@@ -70,13 +80,13 @@ export class InputNode extends DecoratorNode<ReactNode> {
     }
 
     decorate(): JSX.Element {
-        return <InputComponent nodeKey={this.__key} label={this.__label} type={this.__inputType} placeholder={this.__placeholder} />;
+        return <InputComponent nodeKey={this.__key} label={this.__label} type={this.__inputType} placeholder={this.__placeholder} required={this.__required} />;
     }
 }
 
 
-export function $createInputNode(label: string, placeholder: string, type: 'short-answer' | 'long-answer' = 'short-answer'): InputNode {
-    return new InputNode(label, placeholder, type);
+export function $createInputNode(label: string, placeholder: string, type: 'short-answer' | 'long-answer' = 'short-answer', required: boolean = false): InputNode {
+    return new InputNode(label, placeholder, type, required);
 }
 
 export function $isInputNode(node: LexicalNode | null | undefined): node is InputNode {
