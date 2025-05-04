@@ -31,7 +31,7 @@ export function Editor({ editable = true, defaultData }: { editable: boolean, de
   const editorContainerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div ref={editorContainerRef} className="flex flex-col flex-1 relative">
+    <div ref={editorContainerRef} data-editable={editable} className="flex flex-col flex-1 relative group/container">
       <LexicalComposer initialConfig={initialConfig}>
         <RichTextPlugin
           contentEditable={
@@ -46,7 +46,7 @@ export function Editor({ editable = true, defaultData }: { editable: boolean, de
                 'Enter some text, or press / to add a block...'
               }
               placeholder={
-                <p className="absolute top-4 left-0 text-muted-foreground">
+                <p className="absolute top-4 left-0 text-muted-foreground group-data-[editable=false]:hidden">
                   Enter some text, or press / to add a block...
                 </p>
               }
