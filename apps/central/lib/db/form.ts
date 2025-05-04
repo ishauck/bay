@@ -1,4 +1,4 @@
-import { FormPartial } from "@/types/api/forms";
+import { FormPartial } from "@/types/forms";
 import { db } from "./drizzle";
 import { form, organization } from "./schema";
 import { eq } from "drizzle-orm";

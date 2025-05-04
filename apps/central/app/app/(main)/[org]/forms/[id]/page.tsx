@@ -7,6 +7,7 @@ import { AlertCircle } from "lucide-react"
 import Tilt from "react-parallax-tilt"
 import { FormEditor } from "@/components/form/editor"
 import { useFormData } from "@/hooks/api/form-data"
+import { FormResponseStoreProvider } from "@/components/provider/form-response-store"
 
 export default function FormPage() {
     const params = useParams()
@@ -54,6 +55,8 @@ export default function FormPage() {
     }
 
     return (
-        <FormEditor formData={formData} form={form} organization={org.data} />
+        <FormResponseStoreProvider>
+            <FormEditor formData={formData} form={form} organization={org.data} />
+        </FormResponseStoreProvider>
     )
 }

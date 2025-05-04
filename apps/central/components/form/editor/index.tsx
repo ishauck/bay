@@ -1,11 +1,11 @@
 import { cn } from "@/lib/utils"
-import { FormPartial } from "@/types/api/forms"
+import { FormPartial } from "@/types/forms"
 import { useState } from "react"
 import { Editor } from "./editor";
 import { LexicalEditor } from "lexical";
 import { atom } from 'jotai';
 import { EditorButtons } from "./EditorButtons";
-import { FormData } from "@/types/api/form-data";
+import { FormData } from "@/types/form-data";
 import { Organization } from "better-auth/plugins/organization";
 import { FormEditorHeader } from "./FormEditorHeader";
 

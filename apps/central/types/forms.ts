@@ -1,4 +1,4 @@
-import { generatePaginatedResponse } from "../utils";
+import { generatePaginatedResponse } from "./utils";
 import { z } from "zod";
 
 export const FormPartial = z.object({

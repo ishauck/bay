@@ -5,7 +5,7 @@ import { isSavingAtom } from ".";
 import { useAtom } from "jotai";
 import { Organization } from "better-auth/plugins/organization";
 import { setFormData } from "@/lib/api/form-data";
-import { SerializedLexicalState } from "@/types/api/form-data";
+import { SerializedLexicalState } from "@/types/form-data";
 import { toast } from "sonner";
 
 interface EditorAutosaveProps {

@@ -1,4 +1,4 @@
-import { CreatableForm, FormCreateResponse, FormPartial, GetFormsResponse, GetFormsResponseSchema } from "@/types/api/forms";
+import { CreatableForm, FormCreateResponse, FormPartial, GetFormsResponse, GetFormsResponseSchema } from "@/types/forms";
 import { RestErrorSchema } from "../error";
 import { RestResponse, PaginationOptions } from "./index";
 

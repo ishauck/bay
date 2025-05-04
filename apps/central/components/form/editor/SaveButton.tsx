@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import { editorAtom, isSavingAtom } from ".";
 import { toast } from "sonner";
 import { setFormData } from "@/lib/api/form-data";
-import { SerializedLexicalState } from "@/types/api/form-data";
+import { SerializedLexicalState } from "@/types/form-data";
 import useKeybind from "@/hooks/use-keybind";
 import { Organization } from "better-auth/plugins";
 import React from "react";

@@ -11,11 +11,12 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, ArrowRight, Check } from "lucide-react"
 import { useAppStore } from "@/components/provider/app-store"
 import { useEffect, useState, useMemo, useCallback, useRef } from "react"
-import { FormData } from "@/types/api/form-data"
-import { FormPartial } from "@/types/api/forms"
+import { FormData } from "@/types/form-data"
+import { FormPartial } from "@/types/forms"
 import { Organization } from "better-auth/plugins/organization"
 import type { SerializedEditorState, SerializedLexicalNode } from 'lexical'
 import { cn } from "@/lib/utils"
+import { FormResponseStoreProvider } from "@/components/provider/form-response-store"
 
 // Utility to split Lexical state into pages
 type SerializedPageBreakNode = SerializedLexicalNode & { type: 'page-break'; name?: string };
@@ -50,6 +51,7 @@ function FormPagePreviewWithButtons({ formData, form, organization }: FormPagePr
     const [selectedPage, setSelectedPage] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
     const pages = useMemo(() => splitLexicalStateIntoPages(formData.questions), [formData]);
+
     // Create a Lexical state for the selected page
     const pageState = useMemo(() => {
         if (!pages[selectedPage]) return null;
@@ -79,6 +81,7 @@ function FormPagePreviewWithButtons({ formData, form, organization }: FormPagePr
                     <div className="flex flex-col w-full">
                         <h1 className="text-3xl md:text-4xl font-bold">{form.name}</h1>
                         <h2 className="text-lg md:text-xl font-medium">{pages[selectedPage].name}</h2>
+                        {/* <CopyResponse key="copy-response" /> */}
                     </div>
                 )}
                 formData={{ ...formData, questions: pageState }}
@@ -202,6 +205,8 @@ export default function FormPage() {
     }
 
     return (
-        <FormPagePreviewWithButtons formData={formData} form={form} organization={org.data} />
+        <FormResponseStoreProvider>
+            <FormPagePreviewWithButtons formData={formData} form={form} organization={org.data} />
+        </FormResponseStoreProvider>
     )
 }

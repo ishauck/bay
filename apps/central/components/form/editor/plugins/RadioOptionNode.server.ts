@@ -1,10 +1,11 @@
 import { DecoratorNode, LexicalNode, NodeKey, SerializedLexicalNode, Spread } from "lexical";
-
+import { nanoid } from "nanoid";
 type SerializedRadioOptionNode = Spread<{
     label: string;
     options: string[];
     allowOther: boolean;
     required: boolean;
+    questionId: string;
 }, SerializedLexicalNode>
 
 export class RadioOptionNode extends DecoratorNode<null> {
@@ -12,21 +13,23 @@ export class RadioOptionNode extends DecoratorNode<null> {
     __options: string[];
     __allowOther: boolean;
     __required: boolean;
-
+    __questionId: string;
+    
     static getType(): string {
         return 'radio-option';
     }
 
     static clone(node: RadioOptionNode): RadioOptionNode {
-        return new RadioOptionNode(node.__label, node.__options, node.__allowOther, node.__required, node.__key);
+        return new RadioOptionNode(node.__label, node.__options, node.__allowOther, node.__required, node.__questionId, node.__key);
     }
 
-    constructor(label: string, options: string[], allowOther: boolean = false, required: boolean = false, key?: NodeKey) {
+    constructor(label: string, options: string[], allowOther: boolean = false, required: boolean = false, questionId?: string, key?: NodeKey) {
         super(key);
         this.__label = label;
         this.__options = options;
         this.__allowOther = allowOther;
         this.__required = required;
+        this.__questionId = questionId || nanoid();
     }
 
     setLabel(label: string): RadioOptionNode {
@@ -60,11 +63,12 @@ export class RadioOptionNode extends DecoratorNode<null> {
             options: this.__options,
             allowOther: this.__allowOther,
             required: this.__required,
+            questionId: this.__questionId,
         };
     }
 
     static importJSON(serializedNode: SerializedRadioOptionNode): RadioOptionNode {
-        return $createRadioOptionNode(serializedNode.label, serializedNode.options, serializedNode.allowOther, serializedNode.required);
+        return $createRadioOptionNode(serializedNode.label, serializedNode.options, serializedNode.allowOther, serializedNode.required, serializedNode.questionId);
     }
 
     createDOM(): HTMLElement {
@@ -82,8 +86,8 @@ export class RadioOptionNode extends DecoratorNode<null> {
     }
 }
 
-export function $createRadioOptionNode(label: string, options: string[], allowOther: boolean = false, required: boolean = false): RadioOptionNode {
-    return new RadioOptionNode(label, options, allowOther, required);
+export function $createRadioOptionNode(label: string, options: string[], allowOther: boolean = false, required: boolean = false, questionId?: string): RadioOptionNode {
+    return new RadioOptionNode(label, options, allowOther, required, questionId);
 }
 
 export function $isRadioOptionNode(node: LexicalNode | null | undefined): node is RadioOptionNode {

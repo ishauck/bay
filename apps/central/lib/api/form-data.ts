@@ -1,5 +1,5 @@
 import { RestResponse } from ".";
-import { FormData, SerializedLexicalState } from "@/types/api/form-data";
+import { FormData, SerializedLexicalState } from "@/types/form-data";
 import { RestErrorSchema } from "../error";
 
 export async function getFormData(

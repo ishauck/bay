@@ -1,15 +1,18 @@
 import { DecoratorNode, LexicalNode, NodeKey, SerializedLexicalNode, Spread } from "lexical";
 import { JSX, ReactNode } from "react";
 import RadioOptionComponent from "./RadioOptionComponent";
+import { nanoid } from "nanoid";
 
 type SerializedRadioOptionNode = Spread<{
     label: string;
     options: string[];
     allowOther: boolean;
     required: boolean;
+    questionId: string;
 }, SerializedLexicalNode>
 
 export class RadioOptionNode extends DecoratorNode<ReactNode> {
+    __question_id: string;
     __label: string;
     __options: string[];
     __allowOther: boolean;
@@ -23,12 +26,13 @@ export class RadioOptionNode extends DecoratorNode<ReactNode> {
         return new RadioOptionNode(node.__label, node.__options, node.__allowOther, node.__required, node.__key);
     }
 
-    constructor(label: string, options: string[], allowOther: boolean = false, required: boolean = false, key?: NodeKey) {
+    constructor(label: string, options: string[], allowOther: boolean = false, required: boolean = false, questionId?: string, key?: NodeKey) {
         super(key);
         this.__label = label;
         this.__options = options;
         this.__allowOther = allowOther;
         this.__required = required;
+        this.__question_id = questionId || nanoid();
     }
 
     setLabel(label: string): RadioOptionNode {
@@ -62,11 +66,12 @@ export class RadioOptionNode extends DecoratorNode<ReactNode> {
             options: this.__options,
             allowOther: this.__allowOther,
             required: this.__required,
+            questionId: this.__question_id,
         };
     }
 
     static importJSON(serializedNode: SerializedRadioOptionNode): RadioOptionNode {
-        return $createRadioOptionNode(serializedNode.label, serializedNode.options, serializedNode.allowOther, serializedNode.required);
+        return $createRadioOptionNode(serializedNode.label, serializedNode.options, serializedNode.allowOther, serializedNode.required, serializedNode.questionId);
     }
 
     createDOM(): HTMLElement {
@@ -80,13 +85,13 @@ export class RadioOptionNode extends DecoratorNode<ReactNode> {
     }
 
     decorate(): JSX.Element {
-        return <RadioOptionComponent nodeKey={this.__key} label={this.__label} options={this.__options} allowOther={this.__allowOther} required={this.__required} />;
+        return <RadioOptionComponent label={this.__label} options={this.__options} allowOther={this.__allowOther} required={this.__required} questionId={this.__question_id} nodeKey={this.getKey()} />;
     }
 }
 
 
-export function $createRadioOptionNode(label: string, options: string[], allowOther: boolean = false, required: boolean = false): RadioOptionNode {
-    return new RadioOptionNode(label, options, allowOther, required);
+export function $createRadioOptionNode(label: string, options: string[], allowOther: boolean = false, required: boolean = false, questionId?: string): RadioOptionNode {
+    return new RadioOptionNode(label, options, allowOther, required, questionId);
 }
 
 export function $isRadioOptionNode(node: LexicalNode | null | undefined): node is RadioOptionNode {

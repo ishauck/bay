@@ -10,13 +10,25 @@ import { $isInputNode, InputNode } from "./InputNode";
 import { useState, useCallback, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useFormResponseStore } from "@/components/provider/form-response-store";
+import { TextResponse } from "@/types/response";
+import { NodeProps } from "./types";
 
-export default function InputComponent({ label, placeholder, type, nodeKey, required }: { label: string, placeholder: string, type: 'short-answer' | 'long-answer', nodeKey: string, required?: boolean }) {
+type Props = NodeProps<{
+    label: string;
+    placeholder: string;
+    type: 'short-answer' | 'long-answer';
+    required?: boolean;
+}>
+
+export default function InputComponent({ label, placeholder, type, nodeKey, questionId, required }: Props) {
     const [editor] = useLexicalComposerContext();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [newLabel, setNewLabel] = useState(label);
     const [newPlaceholder, setNewPlaceholder] = useState(placeholder);
     const [newRequired, setNewRequired] = useState(!!required);
+    const response = useFormResponseStore(state => state.response.find(r => r.questionId === questionId)) as TextResponse | undefined;
+    const respond = useFormResponseStore(state => state.respond) as (response: TextResponse) => void;
 
     // Sync state with props when dialog opens
     useEffect(() => {
@@ -116,9 +128,29 @@ export default function InputComponent({ label, placeholder, type, nodeKey, requ
             )}
         </div>
         {type === 'short-answer' ? (
-            <Input className="pointer-events-auto" readOnly={isEditable} placeholder={placeholder} />
+            <Input className="pointer-events-auto"
+                maxLength={100}
+                readOnly={isEditable}
+                placeholder={placeholder}
+                value={response?.response || ""}
+                onChange={(e) => respond({
+                    type: "short-answer",
+                    questionId: questionId,
+                    response: e.target.value,
+                })}
+            />
         ) : (
-            <Textarea className="resize-y max-h-48 pointer-events-auto" readOnly={isEditable} placeholder={placeholder} />
+            <Textarea className="resize-y max-h-48 pointer-events-auto"
+                maxLength={1000}
+                readOnly={isEditable}
+                placeholder={placeholder}
+                value={response?.response || ""}
+                onChange={(e) => respond({
+                    type: "long-answer",
+                    questionId: questionId,
+                    response: e.target.value,
+                })}
+            />
         )}
     </div>;
 }

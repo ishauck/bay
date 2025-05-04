@@ -1,6 +1,6 @@
 import { FormDefaultData } from "@/constants";
 import { db as redis } from "@/lib/redis";
-import { SerializedLexicalState, FormData } from "@/types/api/form-data";
+import { SerializedLexicalState, FormData } from "@/types/form-data";
 
 export async function createFormData(
   formId: string,

@@ -10,7 +10,7 @@ import { useRef } from 'react';
 import CustomDataSuggestionPlugin from './plugins/typeahead';
 import { LexicalEditorConfig } from '@/constants';
 import { EditorSetter } from './plugins/EditorSetter';
-import { SerializedLexicalState } from '@/types/api/form-data';
+import { SerializedLexicalState } from '@/types/form-data';
 import { EditorDataSetter } from './plugins/EditorDataSetter';
 import { AllowNewlineAtEndPlugin } from './plugins/AllowNewlineAtEndPlugin';
 import EditorAutosave from "./EditorAutosave";

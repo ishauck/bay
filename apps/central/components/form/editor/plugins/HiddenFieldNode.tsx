@@ -1,25 +1,29 @@
 import { DecoratorNode, LexicalNode, NodeKey, SerializedLexicalNode, Spread } from "lexical";
 import { JSX, ReactNode } from "react";
 import HiddenFieldComponent from "./HiddenFieldComponent";
+import { nanoid } from "nanoid";
 
 type SerializedHiddenFieldNode = Spread<{
     value: string;
+    questionId: string;
 }, SerializedLexicalNode>
 
 export class HiddenFieldNode extends DecoratorNode<ReactNode> {
     __value: string;
+    __questionId: string;
 
     static getType(): string {
         return 'hidden-field';
     }
 
     static clone(node: HiddenFieldNode): HiddenFieldNode {
-        return new HiddenFieldNode(node.__value, node.__key);
+        return new HiddenFieldNode(node.__value, node.__questionId, node.__key);
     }
 
-    constructor(value: string, key?: NodeKey) {
+    constructor(value: string, questionId?: string, key?: NodeKey) {
         super(key);
         this.__value = value;
+        this.__questionId = questionId || nanoid();
     }
 
     setValue(value: string): HiddenFieldNode {
@@ -32,11 +36,12 @@ export class HiddenFieldNode extends DecoratorNode<ReactNode> {
         return {
             ...super.exportJSON(),
             value: this.__value,
+            questionId: this.__questionId,
         };
     }
 
     static importJSON(serializedNode: SerializedHiddenFieldNode): HiddenFieldNode {
-        return $createHiddenFieldNode(serializedNode.value);
+        return $createHiddenFieldNode(serializedNode.value, serializedNode.questionId);
     }
 
     createDOM(): HTMLElement {
@@ -50,13 +55,13 @@ export class HiddenFieldNode extends DecoratorNode<ReactNode> {
     }
 
     decorate(): JSX.Element {
-        return <HiddenFieldComponent nodeKey={this.__key} value={this.__value} />;
+        return <HiddenFieldComponent nodeKey={this.__key} value={this.__value} questionId={this.__questionId} />;
     }
 }
 
 
-export function $createHiddenFieldNode(value: string = ''): HiddenFieldNode {
-    return new HiddenFieldNode(value);
+export function $createHiddenFieldNode(value: string = '', questionId?: string): HiddenFieldNode {
+    return new HiddenFieldNode(value, questionId);
 }
 
 export function $isHiddenFieldNode(node: LexicalNode | null | undefined): node is HiddenFieldNode {

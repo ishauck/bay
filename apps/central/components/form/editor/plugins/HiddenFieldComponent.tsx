@@ -10,9 +10,19 @@ import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { InfoIcon } from "lucide-react";
+import { NodeProps } from "./types";
+import { useSearchParams } from "next/navigation";
+import { useFormResponseStore } from "@/components/provider/form-response-store";
+import { HiddenResponse } from "@/types/response";
 
-export default function HiddenFieldComponent({ value, nodeKey }: { value: string, nodeKey: string }) {
+type Props = NodeProps<{
+    value: string;
+}>
+
+export default function HiddenFieldComponent({ value, nodeKey, questionId }: Props) {
     const [editor] = useLexicalComposerContext();
+    const query = useSearchParams();
+    const respond = useFormResponseStore(state => state.respond) as (response: HiddenResponse) => void;
     const isEditable = editor.isEditable();
 
 
@@ -20,6 +30,17 @@ export default function HiddenFieldComponent({ value, nodeKey }: { value: string
         useLexicalNodeSelection(nodeKey);
     const inputRef = React.useRef<HTMLInputElement>(null);
 
+    useEffect(() => {
+        if (!isEditable) return;
+
+        const res = query.get(value);
+
+        respond({
+            type: "hidden",
+            questionId: questionId,
+            response: res || undefined,
+        });
+    }, [isEditable, query, questionId, respond, value])
 
     const withHiddenFieldNode = useCallback((
         cb: (node: HiddenFieldNode) => void,
@@ -74,7 +95,7 @@ export default function HiddenFieldComponent({ value, nodeKey }: { value: string
     }
 
     return (
-        <div className="flex flex-row items-center justify-between gap-2 my-3">
+        <div className="flex flex-row items-center justify-between gap-2 my-3 pointer-events-auto">
             <Input
                 ref={inputRef}
                 value={value}

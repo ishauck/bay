@@ -12,18 +12,28 @@ import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { Checkbox } from "@/components/ui/checkbox";
+import { NodeProps } from "./types";
+import { useFormResponseStore } from "@/components/provider/form-response-store";
+import { RadioResponse } from "@/types/response";
 
-export default function RadioOptionComponent({ label, options, allowOther, nodeKey, required }: { label: string, options: string[], allowOther: boolean, nodeKey: string, required?: boolean }) {
+type Props = NodeProps<{
+    label: string;
+    options: string[];
+    allowOther: boolean;
+    required?: boolean;
+}>
+
+export default function RadioOptionComponent({ label, options, allowOther, required, questionId, nodeKey }: Props) {
     const [editor] = useLexicalComposerContext();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [newLabel, setNewLabel] = useState(label);
     const [newOptions, setNewOptions] = useState<string[]>(options);
     const [newAllowOther, setNewAllowOther] = useState(allowOther);
     const [newRequired, setNewRequired] = useState(!!required);
-    const [selectedValue, setSelectedValue] = useState<string | undefined>(undefined);
-    const [otherValue, setOtherValue] = useState("");
     const [otherDialogOpen, setOtherDialogOpen] = useState(false);
     const [tempOtherValue, setTempOtherValue] = useState("");
+    const response = useFormResponseStore(state => state.response.find(r => r.questionId === questionId)) as RadioResponse | undefined;
+    const respond = useFormResponseStore(state => state.respond) as (response: RadioResponse) => void;
 
     // Sync state with props when dialog opens
     useEffect(() => {
@@ -64,6 +74,9 @@ export default function RadioOptionComponent({ label, options, allowOther, nodeK
     const handleRemoveOption = (idx: number) => {
         setNewOptions(opts => opts.filter((_, i) => i !== idx));
     };
+
+    const selectedValue = response?.response?.option;
+    const otherValue = response?.response?.otherValue ?? "";
 
     return <div data-is-editable={isEditable} className="group w-full sm:w-1/2 md:w-1/3 my-4 pointer-events-none">
         <div className="flex flex-row items-center justify-between mb-2">
@@ -153,10 +166,15 @@ export default function RadioOptionComponent({ label, options, allowOther, nodeK
         <RadioGroup className="flex flex-col gap-2 pointer-events-auto"
             value={selectedValue}
             onValueChange={isEditable ? undefined : (val => {
-                setSelectedValue(val);
                 if (val === "other") {
                     setTempOtherValue(otherValue);
                     setOtherDialogOpen(true);
+                } else {
+                    respond({
+                        type: 'radio',
+                        questionId: questionId,
+                        response: { option: val },
+                    });
                 }
             })}
         >
@@ -215,8 +233,11 @@ export default function RadioOptionComponent({ label, options, allowOther, nodeK
                     <form
                         onSubmit={e => {
                             e.preventDefault();
-                            setOtherValue(tempOtherValue);
-                            if (selectedValue !== "other") setSelectedValue("other");
+                            respond({
+                                type: 'radio',
+                                questionId: questionId,
+                                response: { option: "other", otherValue: tempOtherValue },
+                            });
                             setOtherDialogOpen(false);
                         }}
                     >
@@ -239,8 +260,11 @@ export default function RadioOptionComponent({ label, options, allowOther, nodeK
                         <AlertDialogFooter>
                             <AlertDialogCancel type="button">Cancel</AlertDialogCancel>
                             <Button onClick={() => {
-                                setOtherValue(tempOtherValue);
-                                if (selectedValue !== "other") setSelectedValue("other");
+                                respond({
+                                    type: 'radio',
+                                    questionId: questionId,
+                                    response: { option: "other", otherValue: tempOtherValue },
+                                });
                                 setOtherDialogOpen(false);
                             }} type="submit">Done</Button>
                         </AlertDialogFooter>

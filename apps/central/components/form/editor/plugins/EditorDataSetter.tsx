@@ -1,6 +1,6 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useEffect } from "react";
-import { SerializedLexicalState } from "@/types/api/form-data";
+import { SerializedLexicalState } from "@/types/form-data";
 
 export function EditorDataSetter({ defaultData }: { defaultData: SerializedLexicalState | null }) {
     const [editor] = useLexicalComposerContext();
