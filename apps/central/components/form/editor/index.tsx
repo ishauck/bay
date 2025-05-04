@@ -28,7 +28,7 @@ export function FormEditor({ className, form, formData, organization, editable =
             {customHeader ? (
                 customHeader
             ) : (
-                <FormEditorHeader name={name} setName={setName} editable={editable} />
+                <FormEditorHeader name={name} setName={setName} editable={editable} orgId={organization.id} formId={form.id} />
             )}
             {editable && (
                 <EditorButtons org={organization} formId={form.id} />

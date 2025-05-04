@@ -23,7 +23,7 @@ export class RadioOptionNode extends DecoratorNode<ReactNode> {
     }
 
     static clone(node: RadioOptionNode): RadioOptionNode {
-        return new RadioOptionNode(node.__label, node.__options, node.__allowOther, node.__required, node.__key);
+        return new RadioOptionNode(node.__label, node.__options, node.__allowOther, node.__required, node.__question_id, node.getKey());
     }
 
     constructor(label: string, options: string[], allowOther: boolean = false, required: boolean = false, questionId?: string, key?: NodeKey) {

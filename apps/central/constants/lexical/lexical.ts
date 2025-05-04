@@ -79,6 +79,15 @@ const DefaultThemeSettings: EditorThemeClasses = {
   },
 };
 
+export const TYPES_TO_NODES: Record<
+  string,
+  typeof HiddenFieldNode | typeof InputNode | typeof RadioOptionNode
+> = {
+  "hidden-field": HiddenFieldNode,
+  "input": InputNode,
+  "radio-option": RadioOptionNode,
+};
+
 export const LexicalEditorConfig: Partial<InitialConfigType> = {
   theme: DefaultThemeSettings,
   nodes: [

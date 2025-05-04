@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { getForm } from "@/lib/db/form";
 import { getOrCreateFormData, setFormData } from "@/lib/db/form-data";
 import { RestError } from "@/lib/error";
-import { validateLexicalState } from "@/lib/lexical";
+import { validateLexicalState } from "@/lib/server/lexical";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(

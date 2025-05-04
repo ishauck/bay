@@ -36,7 +36,10 @@ export const RadioResponse = QuestionResponse.extend({
     }).optional(),
 });
 
+
 export const AllowedResponse = ShortAnswerResponse.or(LongAnswerResponse).or(RadioResponse).or(HiddenResponse);
+
+export const Response = z.array(AllowedResponse);
 
 export type AllowedResponse = z.infer<typeof AllowedResponse>;
 export type QuestionResponse = z.infer<typeof QuestionResponse>;
@@ -46,3 +49,5 @@ export type TextResponse = z.infer<typeof TextResponse>;
 export type ShortAnswerResponse = z.infer<typeof ShortAnswerResponse>;
 export type LongAnswerResponse = z.infer<typeof LongAnswerResponse>;
 export type RadioResponse = z.infer<typeof RadioResponse>;
+
+export type Response = z.infer<typeof Response>;

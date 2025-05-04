@@ -95,3 +95,34 @@ export async function getForm(orgId: string, formId: string): Promise<RestRespon
 
     throw new Error("Invalid response");
 }
+
+export async function updateForm(orgId: string, formId: string, data: Partial<{ name: string }>): Promise<RestResponse<boolean>> {
+    if (!orgId.startsWith("org_")) {
+        orgId = "org_" + orgId;
+    }
+    if (!formId.startsWith("form_")) {
+        formId = "form_" + formId;
+    }
+    const url = new URL(window.location.origin + "/api/orgs/" + orgId + "/forms/" + formId);
+    const response = await fetch(url, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    const resData = await response.json();
+    if (RestErrorSchema.safeParse(resData).success) {
+        return {
+            data: null,
+            error: resData as RestErrorSchema,
+        };
+    }
+    if (response.ok) {
+        return {
+            data: true,
+            error: null,
+        };
+    }
+    throw new Error("Invalid response");
+}

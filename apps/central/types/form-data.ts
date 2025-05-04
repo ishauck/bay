@@ -1,4 +1,4 @@
-import { validateLexicalState } from "@/lib/lexical";
+import { validateLexicalState } from "@/lib/server/lexical";
 import { z } from "zod";
 
 export type SerializedLexicalState = never;

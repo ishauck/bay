@@ -1,0 +1,2 @@
+ALTER TABLE "form" ADD COLUMN "is_active" boolean DEFAULT true NOT NULL;--> statement-breakpoint
+ALTER TABLE "form" ADD COLUMN "non_accepting_message" text DEFAULT 'This form is not currently accepting responses.';

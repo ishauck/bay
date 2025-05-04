@@ -5,6 +5,15 @@ import { HiddenFieldNode } from "@/components/form/editor/plugins/HiddenFieldNod
 import { PageBreakNode } from "@/components/form/editor/plugins/PageBreakNode.server";
 import { RadioOptionNode } from "@/components/form/editor/plugins/RadioOptionNode.server";
 
+export const TYPES_TO_NODES: Record<
+  string,
+  typeof HiddenFieldNode | typeof InputNode | typeof RadioOptionNode
+> = {
+  "hidden-field": HiddenFieldNode,
+  "input": InputNode,
+  "radio-option": RadioOptionNode,
+};
+
 export const LexicalEditorConfig = {
   nodes: [
     HeadingNode,

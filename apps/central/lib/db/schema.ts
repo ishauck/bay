@@ -84,6 +84,9 @@ export const form = pgTable("form", {
     .references(() => user.id),
   updatedAt: timestamp("updated_at"),
   responseCount: integer("response_count").notNull().default(0),
+  // Whether the form is currently active and accepting responses
+  isActive: boolean("is_active").notNull().default(true),
+  nonAcceptingMessage: text("non_accepting_message").default("This form is not currently accepting responses."),
 });
 
 export const member = pgTable("member", {
