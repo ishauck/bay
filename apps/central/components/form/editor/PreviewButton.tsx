@@ -17,7 +17,7 @@ export function PreviewButton(props: ButtonProps) {
             router.push(`/app/${org.slug}/forms/${formId}/preview`);
         }} aria-label="Preview" {...buttonProps}>
             <EyeIcon className="size-4" />
-            <span>Preview</span>
+            <span className="sr-only md:not-sr-only">Preview</span>
         </Button>
     );
 } 

@@ -94,7 +94,7 @@ export const AllowedResponse = ShortAnswerResponse.or(LongAnswerResponse)
 
 export const Response = z.array(AllowedResponse);
 
-export const StoredResponse = z.object({
+export const ResponseMetadata = z.object({
   id: z.string(),
   formId: z.string(),
   submittedAt: z.string().datetime(),
@@ -105,6 +105,9 @@ export const StoredResponse = z.object({
       userAgent: z.string().optional(),
     })
     .optional(),
+});
+
+export const StoredResponse = ResponseMetadata.extend({
   response: Response,
 });
 
@@ -119,3 +122,4 @@ export type RadioResponse = z.infer<typeof RadioResponse>;
 
 export type Response = z.infer<typeof Response>;
 export type StoredResponse = z.infer<typeof StoredResponse>;
+export type ResponseMetadata = z.infer<typeof ResponseMetadata>;
