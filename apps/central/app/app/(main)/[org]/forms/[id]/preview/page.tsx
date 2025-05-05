@@ -22,6 +22,7 @@ import { toast } from "sonner"
 import { FIELD_TYPES } from "@/constants/lexical/shared"
 import { BaseSerializedFieldNode } from "@/components/form/editor/plugins/types"
 import { Response } from "@/types/response"
+import useKeybind from "@/hooks/use-keybind"
 // Utility to split Lexical state into pages
 type SerializedPageBreakNode = SerializedLexicalNode & { type: 'page-break'; name?: string };
 
@@ -93,6 +94,49 @@ function FormPagePreviewWithButtons({ formData, form, organization }: FormPagePr
         });
     }, [pages, clearRequired, markRequired]);
 
+    const handleSubmit = useCallback(async () => {
+        const completeReqs = requiredQuestions.filter((q) => q.value);
+        // required question ids
+        const reqs = completeReqs.map((q) => q.questionId)
+        // all reqs where responses contain an answer
+        const answeredReqs = reqs.filter((r) => response.some((ar) => ar.questionId === r))
+        const unansweredReqs = reqs.filter((r) => !answeredReqs.includes(r))
+
+        if (unansweredReqs.length > 0) {
+            const id = unansweredReqs[0];
+            const r = completeReqs.find((q) => q.questionId === id);
+            setSelectedPage(r?.pageIndex ?? 0);
+            toast.error(`There are still required questions that need to be answered.`);
+            return;
+        }
+
+        const schema = Response.safeParse(response);
+        if (!schema.success) {
+            toast.error(schema.error.issues[0].message + "!");
+            return;
+        }
+
+        const res = await submitForm(form.id);
+        if (res.error) {
+            toast.error(res.error.message);
+        }
+        if (res.data) {
+            router.push(`/forms/${form.id}/complete?org_slug=${organization.slug}&ref=preview&response_id=${res.data.id}&form_id=${form.id}`);
+        }
+    }, [requiredQuestions, response, submitForm, form.id, setSelectedPage, router, organization.slug]);
+
+    useKeybind('Enter', () => {
+        if (selectedPage === pages.length - 1) {
+            handleSubmit();
+        } else {
+            setSelectedPage((prev) => Math.min(prev + 1, pages.length - 1));
+        }
+    });
+
+    useKeybind('shift+Enter', () => {
+        setSelectedPage((prev) => Math.max(prev - 1, 0));
+    });
+
     // Create a Lexical state for the selected page
     const pageState = useMemo(() => {
         if (!pages[selectedPage]) return null;
@@ -121,8 +165,9 @@ function FormPagePreviewWithButtons({ formData, form, organization }: FormPagePr
                 customHeader={(
                     <div className="flex flex-col w-full">
                         <h1 className="text-3xl md:text-4xl font-bold">{form.name}</h1>
-                        <h2 className="text-lg md:text-xl font-medium">{pages[selectedPage].name}</h2>
-                        {/* <CopyResponse key="copy-response" /> */}
+                        {selectedPage > 0 && (
+                            <h2 className="text-lg md:text-xl font-medium">{pages[selectedPage].name}</h2>
+                        )}
                     </div>
                 )}
                 formData={{ ...formData, questions: pageState }}
@@ -167,34 +212,7 @@ function FormPagePreviewWithButtons({ formData, form, organization }: FormPagePr
                     disabled={isSubmitting}
                     onClick={async () => {
                         if (selectedPage === pages.length - 1) {
-                            const completeReqs = requiredQuestions.filter((q) => q.value);
-                            // required question ids
-                            const reqs = completeReqs.map((q) => q.questionId)
-                            // all reqs where responses contain an answer
-                            const answeredReqs = reqs.filter((r) => response.some((ar) => ar.questionId === r))
-                            const unansweredReqs = reqs.filter((r) => !answeredReqs.includes(r))
-
-                            if (unansweredReqs.length > 0) {
-                                const id = unansweredReqs[0];
-                                const r = completeReqs.find((q) => q.questionId === id);
-                                setSelectedPage(r?.pageIndex ?? 0);
-                                toast.error(`There are still required questions that need to be answered.`);
-                                return;
-                            }
-
-                            const schema = Response.safeParse(response);
-                            if (!schema.success) {
-                                toast.error(schema.error.issues[0].message + "!");
-                                return;
-                            }
-
-                            const res = await submitForm(form.id);
-                            if (res.error) {
-                                toast.error(res.error.message);
-                            }
-                            if (res.data) {
-                                router.push(`/forms/${form.id}/complete?org_slug=${organization.slug}&ref=preview&response_id=${res.data.id}&form_id=${form.id}`);
-                            }
+                            handleSubmit();
                         } else {
                             scrollToTop();
                             setSelectedPage((prev) => Math.min(prev + 1, pages.length - 1));

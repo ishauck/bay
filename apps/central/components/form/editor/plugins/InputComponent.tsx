@@ -60,7 +60,7 @@ export default function InputComponent({ label, placeholder, type, nodeKey, ques
 
     const hasChanges = newLabel !== label || newPlaceholder !== placeholder || newRequired !== !!required;
 
-    return <div data-is-editable={isEditable} data-type={type} className="group w-full sm:w-1/2 md:w-1/3 data-[type=long-answer]:w-full my-4 pointer-events-none">
+    return <div data-is-editable={isEditable} data-type={type} className="group w-full lg:w-1/3 data-[type=long-answer]:w-full my-4 pointer-events-none">
         <div className="flex flex-row items-center justify-between mb-2">
             <Label className="flex-1 pointer-events-auto">
                 {label} {required && <span className="text-red-500 ml-1" title="Required">*</span>}

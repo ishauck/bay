@@ -144,7 +144,6 @@ export function verifyResponse(
         break;
       }
       case "radio-option": {
-        // For radio fields, response type must be 'radio'
         if (response.type !== "radio") {
           console.error(
             `[verifyResponse] Type mismatch for questionId '${questionId}': expected 'radio', got '${response.type}'.`
