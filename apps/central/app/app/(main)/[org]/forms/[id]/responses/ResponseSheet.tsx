@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFormData } from "@/hooks/api/form-data";
 import { FIELD_TYPES } from "@/constants/lexical/shared";
 import type { SerializedLexicalNode } from "lexical";
+import { Separator } from "@/components/ui/separator";
 
 interface ResponseSheetProps {
     visibleResponse: ResponseMetadata | null;
@@ -39,6 +40,9 @@ function isRadioOptionNode(node: SerializedLexicalNode): node is SerializedLexic
 }
 function isHiddenFieldNode(node: SerializedLexicalNode): node is SerializedLexicalNode & { questionId: string; value: string } {
     return node.type === "hidden-field" && typeof (node as unknown as { questionId?: unknown }).questionId === "string";
+}
+function isPageBreakNode(node: SerializedLexicalNode): node is SerializedLexicalNode & { questionId: string; label: string } {
+    return node.type === "page-break";
 }
 
 export function ResponseSheet({ visibleResponse, onClose, orgId }: ResponseSheetProps) {
@@ -138,6 +142,11 @@ export function ResponseSheet({ visibleResponse, onClose, orgId }: ResponseSheet
                                                     : <span className="flex items-center gap-1 text-muted-foreground"><Info size={14} /> No answer</span>}
                                             </span>
                                         );
+                                    }
+                                    else if (isPageBreakNode(node)) {
+                                        return (
+                                            <Separator className="my-2" key={`page-break-${idx}`} />
+                                        )
                                     }
                                     if (!questionId) return null;
                                     return (
