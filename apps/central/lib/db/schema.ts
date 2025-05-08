@@ -89,6 +89,23 @@ export const form = pgTable("form", {
   nonAcceptingMessage: text("non_accepting_message").default("This form is not currently accepting responses."),
 });
 
+export const reportAbuse = pgTable("report_abuse", {
+  id: text("id").primaryKey(),
+  formId: text("form_id")
+    .notNull()
+    .references(() => form.id, { onDelete: "cascade" }),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  reason: text("reason").notNull(),
+  details: text("details").notNull(),
+  createdAt: timestamp("created_at").notNull(),
+  reviewedAt: timestamp("reviewed_at"),
+  reviewedBy: text("reviewed_by")
+    .references(() => user.id, { onDelete: "cascade" }),
+  status: text("status").notNull().default("pending"),
+});
+
 export const member = pgTable("member", {
   id: text("id").primaryKey(),
   organizationId: text("organization_id")
