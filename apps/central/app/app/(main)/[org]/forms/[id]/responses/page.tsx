@@ -15,6 +15,14 @@ import { ResizablePanel } from "@/components/ui/resizable";
 import { ResizablePanelGroup } from "@/components/ui/resizable";
 import { ResponseSheet } from "./ResponseSheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 
 const visibleResponseAtom = atom<ResponseMetadata | null>(null);
 
@@ -110,39 +118,46 @@ export default function ResponsesPage() {
                     </div>
                     <div className="overflow-x-auto mt-4">
                         {data?.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-12">
-                                <Inbox className="w-24 h-24 text-muted-foreground mb-4" />
-                                <p className="text-muted-foreground">No responses yet. Share your form to start collecting responses!</p>
+                            <div className="flex flex-col items-center justify-center py-16 bg-white dark:bg-zinc-950 rounded-xl shadow border border-zinc-200 dark:border-zinc-800 transition-all">
+                                <Inbox className="w-28 h-28 text-muted-foreground mb-6 animate-bounce-slow" />
+                                <p className="text-lg text-zinc-500 dark:text-zinc-400 font-medium mb-2">No responses yet</p>
+                                <p className="text-muted-foreground mb-4">Share your form to start collecting responses!</p>
+                                <Button asChild variant="default" size="sm">
+                                    <Link href={`/app/${orgSlug}/forms/${formId}`}>Share Form</Link>
+                                </Button>
                             </div>
                         ) : (
-                            <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800">
-                                <thead className="sticky top-0 z-10 bg-zinc-100 dark:bg-zinc-900">
-                                    <tr>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-zinc-500">ID</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-zinc-500">Submitted At</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-zinc-500">IP</th>
-                                        <th className="px-3 py-2 text-left text-xs font-medium text-zinc-500">User Agent</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white dark:bg-zinc-950 divide-y divide-zinc-200 dark:divide-zinc-800">
-                                    {data?.map((response: ResponseMetadata) => (
-                                        <ResponseTableRow
-                                            key={response.id}
-                                            response={response}
-                                        />
-                                    ))}
-                                </tbody>
-                            </table>
+                            <div className="rounded-xl shadow border border-border bg-card overflow-hidden">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead className="sticky left-0 z-20">ID</TableHead>
+                                            <TableHead>Submitted At</TableHead>
+                                            <TableHead>IP</TableHead>
+                                            <TableHead>User Agent</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {data?.map((response: ResponseMetadata, idx: number) => (
+                                            <ResponseTableRow
+                                                key={response.id}
+                                                response={response}
+                                                rowIndex={idx}
+                                            />
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
                         )}
                     </div>
                 </ResizablePanel>
             </ResizablePanelGroup>
-            <ResponseSheet visibleResponse={visibleResponse} onClose={() => setVisibleResponse(null)} orgId={org.data?.id ?? ""} />
+            <ResponseSheet visibleResponse={visibleResponse} onClose={() => setVisibleResponse(null)} orgId={org.data?.id ?? ""} formId={formId} />
         </>
     )
 }
 
-function ResponseTableRow({ response }: { response: ResponseMetadata }) {
+function ResponseTableRow({ response, rowIndex }: { response: ResponseMetadata, rowIndex: number }) {
     const [ua, setUa] = useState<{ device?: string, os?: string, browser?: string } | null>(null);
     const setVisibleResponse = useSetAtom(visibleResponseAtom);
 
@@ -174,30 +189,31 @@ function ResponseTableRow({ response }: { response: ResponseMetadata }) {
     };
 
     return (
-        <tr
-            className={`transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/60 hover:bg-primary/10 focus:bg-primary/20 even:bg-zinc-50 dark:even:bg-zinc-900`}
+        <TableRow
+            className={`cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/60 group ${rowIndex % 2 === 0 ? 'bg-zinc-50 dark:bg-zinc-900' : 'bg-white dark:bg-zinc-950'}`}
             onClick={() => setVisibleResponse(response)}
             tabIndex={0}
             aria-label={`View response ${response.id}`}
             onKeyDown={handleKeyDown}
         >
-            <td className="px-3 py-2 font-mono text-xs text-zinc-500 flex items-center gap-2">
-                <span>{response.id}</span>
+            <TableCell className="font-mono text-xs flex items-center gap-2 sticky left-0 z-10 bg-inherit" title={response.id}>
+                <span className="truncate max-w-[120px]" tabIndex={-1}>{response.id}</span>
                 <Button
                     aria-label="Copy Response ID"
                     onClick={e => { e.stopPropagation(); handleCopy(e); }}
                     variant="ghost"
                     size="iconXs"
+                    tabIndex={-1}
                 >
                     <Copy size={14} />
                 </Button>
-            </td>
-            <td className="px-3 py-2 text-xs text-zinc-400">{new Date(response.submittedAt).toLocaleString()}</td>
-            <td className="px-3 py-2 text-xs">
+            </TableCell>
+            <TableCell className="text-xs text-zinc-400 whitespace-nowrap" title={new Date(response.submittedAt).toLocaleString()}>{new Date(response.submittedAt).toLocaleString()}</TableCell>
+            <TableCell className="text-xs">
                 {response.sender?.ip ? (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-xs text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 leading-tight">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-xs text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 leading-tight" title={response.sender.ip}>
                         <Server size={13} className="text-zinc-400" aria-label="IP Address" />
-                        {response.sender.ip}
+                        <span className="truncate max-w-[90px]">{response.sender.ip}</span>
                     </span>
                 ) : (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-xs text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 leading-tight">
@@ -205,25 +221,25 @@ function ResponseTableRow({ response }: { response: ResponseMetadata }) {
                         Unknown
                     </span>
                 )}
-            </td>
-            <td className="px-3 py-2 text-xs">
+            </TableCell>
+            <TableCell className="text-xs">
                 {ua && (
                     <div className="flex flex-wrap gap-1">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-green-100 dark:bg-green-900 text-xs text-green-700 dark:text-green-200 border border-green-200 dark:border-green-700 leading-tight">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-green-100 dark:bg-green-900 text-xs text-green-700 dark:text-green-200 border border-green-200 dark:border-green-700 leading-tight" title={ua.device}>
                             <MonitorSmartphone size={13} className="text-green-400" aria-label="Device" />
-                            {ua.device}
+                            <span className="truncate max-w-[70px]">{ua.device}</span>
                         </span>
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-yellow-100 dark:bg-yellow-900 text-xs text-yellow-700 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-700 leading-tight">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-yellow-100 dark:bg-yellow-900 text-xs text-yellow-700 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-700 leading-tight" title={ua.browser}>
                             <Globe2 size={13} className="text-yellow-400" aria-label="Browser" />
-                            {ua.browser}
+                            <span className="truncate max-w-[70px]">{ua.browser}</span>
                         </span>
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900 text-xs text-purple-700 dark:text-purple-200 border border-purple-700 dark:border-purple-700 leading-tight">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900 text-xs text-purple-700 dark:text-purple-200 border border-purple-700 dark:border-purple-700 leading-tight" title={ua.os}>
                             <Laptop2 size={13} className="text-purple-400" aria-label="OS" />
-                            {ua.os}
+                            <span className="truncate max-w-[70px]">{ua.os}</span>
                         </span>
                     </div>
                 )}
-            </td>
-        </tr>
+            </TableCell>
+        </TableRow>
     );
 }

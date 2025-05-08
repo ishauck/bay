@@ -1,4 +1,3 @@
-
 import { createStore } from 'zustand/vanilla'
 
 export type AppState = {
@@ -14,7 +13,7 @@ export type AppActions = {
   clearActions: () => void;
 }
 
-export type AppStore = AppState & AppActions
+export type AppStore = AppState & AppActions & { reset: () => void }
 
 export const defaultInitState: AppState = {
   isWorkspaceCreatorShowing: false,
@@ -31,5 +30,6 @@ export const createAppStore = (
     addAction: (action: React.ReactNode) => set((state) => ({ actions: [...state.actions, action] })),
     removeAction: (action: React.ReactNode) => set((state) => ({ actions: state.actions.filter((a) => a !== action) })),
     clearActions: () => set(() => ({ actions: [] })),
+    reset: () => {}, // default no-op, will be replaced in provider
   }))
 }

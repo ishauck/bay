@@ -1,9 +1,9 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { CopyIcon, Info, Download } from "lucide-react";
+import { CopyIcon, Info, Download, Trash } from "lucide-react";
 import { toast } from "sonner";
 import type { ResponseMetadata } from "@/types/response";
-import { useResponse } from "@/hooks/api/responses";
+import { useResponse, useDeleteResponse } from "@/hooks/api/responses";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFormData } from "@/hooks/api/form-data";
 import { FIELD_TYPES } from "@/constants/lexical/shared";
@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 interface ResponseSheetProps {
     visibleResponse: ResponseMetadata | null;
     orgId: string;
+    formId: string;
     onClose: () => void;
 }
 
@@ -45,9 +46,10 @@ function isPageBreakNode(node: SerializedLexicalNode): node is SerializedLexical
     return node.type === "page-break";
 }
 
-export function ResponseSheet({ visibleResponse, onClose, orgId }: ResponseSheetProps) {
-    const { data: response, isLoading, error } = useResponse(orgId, visibleResponse?.formId ?? "", visibleResponse?.id ?? "");
-    const { data: formData } = useFormData(orgId, visibleResponse?.formId ?? "");
+export function ResponseSheet({ visibleResponse, onClose, orgId, formId }: ResponseSheetProps) {
+    const { data: response, isLoading, error } = useResponse(orgId, formId, visibleResponse?.id ?? "");
+    const { data: formData } = useFormData(orgId, formId);
+    const deleteResponseMutation = useDeleteResponse(orgId, formId);
 
     // Extract all question nodes from the form's lexical state
     let questionNodes: SerializedLexicalNode[] = [];
@@ -65,7 +67,7 @@ export function ResponseSheet({ visibleResponse, onClose, orgId }: ResponseSheet
 
     return (
         <Sheet open={!!visibleResponse} onOpenChange={open => { if (!open) onClose(); }}>
-            <SheetContent side="right" className="p-0 max-w-lg w-full flex flex-col overflow-y-auto">
+            <SheetContent side="right" className="p-0 max-w-lg w-full flex flex-col overflow-y-auto transition-all duration-300 ease-in-out transform shadow-2xl border-l border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
                 <SheetHeader className="p-4 pb-0 flex-none">
                     <SheetTitle className="flex items-center gap-2">
                         Response
@@ -89,6 +91,23 @@ export function ResponseSheet({ visibleResponse, onClose, orgId }: ResponseSheet
                             URL.revokeObjectURL(url);
                         }} size="iconSm" title="Download JSON">
                             <Download className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          onClick={async () => {
+                            if (!visibleResponse) return;
+                            if (!window.confirm("Are you sure you want to delete this response?")) return;
+                            await deleteResponseMutation.mutateAsync({
+                              id: visibleResponse.id,
+                            });
+                            onClose();
+                            toast.success("Response deleted");
+                          }}
+                          size="iconSm"
+                          disabled={deleteResponseMutation.isPending}
+                          title="Delete Response"
+                        >
+                          <Trash className="w-4 h-4" />
                         </Button>
                     </SheetTitle>
                 </SheetHeader>

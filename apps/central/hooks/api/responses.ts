@@ -6,7 +6,6 @@ import {
   deleteAllResponses,
 } from "@/lib/api/response";
 import { getDataOrThrow } from "@/lib/api";
-import { ResponseMetadata } from "@/types/response";
 
 export function useResponseKeys(orgId: string, formId: string) {
   if (!orgId.startsWith("org_")) {
@@ -33,29 +32,30 @@ export function useResponse(orgId: string, formId: string, id: string) {
   }
 
   return useQuery({
-    queryKey: ["response", orgId, formId, id],
+    queryKey: ["responses", orgId, formId, id],
     queryFn: async () => getDataOrThrow(await getResponse(orgId, formId, id)),
   });
 }
 
-export function useDeleteResponse() {
+export function useDeleteResponse(orgId: string, formId: string) {
   const queryClient = useQueryClient();
+  const responses = useResponseKeys(orgId, formId);
+
+  if (!orgId.startsWith("org_")) {
+    orgId = `org_${orgId}`;
+  }
+
+  if (!formId.startsWith("form_")) {
+    formId = `form_${formId}`;
+  }
 
   return useMutation({
-    mutationFn: async ({
-      orgId,
-      formId,
-      id,
-    }: {
-      orgId: string;
-      formId: string;
-      id: string;
-    }) => {
+    mutationFn: async ({ id }: { id: string }) => {
       return getDataOrThrow(await deleteResponse(orgId, formId, id));
     },
     onSuccess: (_, variables) => {
-      queryClient.setQueryData(["responses", variables.orgId, variables.formId], (input: ResponseMetadata[]) => {
-        return input.filter((resp) => resp.id !== variables.id);
+      queryClient.setQueryData(["responses", orgId, formId], () => {
+        return responses.data?.filter((resp) => resp.id !== variables.id);
       });
     },
   });
@@ -79,13 +79,31 @@ export function useDeleteAllResponses() {
       if (!formId.startsWith("form_")) {
         formId = `form_${formId}`;
       }
+
+      console.log("deleting all responses", orgId, formId);
+
       const res = getDataOrThrow(await deleteAllResponses(orgId, formId));
       if (res) {
         return [];
       }
     },
     onSuccess: (_, variables) => {
-      queryClient.setQueryData(["responses", variables.orgId, variables.formId], []);
+      let { orgId, formId } = variables;
+
+      if (!orgId.startsWith("org_")) {
+        orgId = `org_${orgId}`;
+      }
+
+      if (!formId.startsWith("form_")) {
+        formId = `form_${formId}`;
+      }
+
+      console.log("deleting all responses", orgId, formId);
+
+      queryClient.setQueryData(
+        ["responses", variables.orgId, variables.formId],
+        []
+      );
     },
   });
 }
