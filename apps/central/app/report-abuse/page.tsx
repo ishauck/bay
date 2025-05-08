@@ -19,9 +19,8 @@ export const metadata: Metadata = {
     },
 }
 
-export default async function ReportAbusePage({ searchParams }: { searchParams: { id?: string; back?: string } }) {
-    const id = searchParams.id;
-    const backUrl = searchParams.back;
+export default async function ReportAbusePage({ searchParams }: { searchParams: Promise<{ id?: string; back?: string }> }) {
+    const { id, back: backUrl } = await searchParams;
     if (!id) {
         return notFound();
     }
