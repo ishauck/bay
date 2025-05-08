@@ -11,7 +11,7 @@ import { FormEditorHeader } from "./FormEditorHeader";
 
 interface FormEditorProps extends React.HTMLAttributes<HTMLDivElement> {
     form: FormPartial;
-    organization: Organization;
+    organization: Organization | null;
     formData: FormData;
     editable?: boolean;
     customHeader?: React.ReactNode;
@@ -24,13 +24,13 @@ export function FormEditor({ className, form, formData, organization, editable =
     const [name, setName] = useState(form.name);
 
     return (
-        <div className={cn("p-6 h-full flex flex-col gap-2", className)} {...props}>
+        <div className={cn("h-full w-full flex flex-col gap-2 p-6", className)} {...props}>
             {customHeader ? (
                 customHeader
             ) : (
-                <FormEditorHeader name={name} setName={setName} editable={editable} orgId={organization.id} formId={form.id} />
+                <FormEditorHeader name={name} setName={setName} editable={editable} orgId={organization?.id || ""} formId={form.id} />
             )}
-            {editable && (
+            {(editable && organization) && (
                 <EditorButtons org={organization} formId={form.id} />
             )}
             <Editor defaultData={formData.questions} editable={editable} org={organization} formId={form.id} />

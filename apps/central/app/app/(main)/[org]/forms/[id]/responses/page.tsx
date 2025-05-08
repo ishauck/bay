@@ -16,13 +16,14 @@ import { ResizablePanelGroup } from "@/components/ui/resizable";
 import { ResponseSheet } from "./ResponseSheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
+    Table,
+    TableHeader,
+    TableBody,
+    TableRow,
+    TableHead,
+    TableCell,
 } from "@/components/ui/table";
+import { useAppStore } from "@/components/provider/app-store";
 
 const visibleResponseAtom = atom<ResponseMetadata | null>(null);
 
@@ -35,6 +36,7 @@ export default function ResponsesPage() {
     const [visibleResponse, setVisibleResponse] = useAtom(visibleResponseAtom);
     const deleteAllResponses = useDeleteAllResponses();
     const { data, isLoading, error } = useResponseKeys(org.data?.id ?? "", formId);
+    const setFormShareModalId = useAppStore(state => state.setFormShareModalId);
 
     // Add Escape key support to close the details panel
     useEffect(() => {
@@ -122,8 +124,8 @@ export default function ResponsesPage() {
                                 <Inbox className="w-28 h-28 text-muted-foreground mb-6 animate-bounce-slow" />
                                 <p className="text-lg text-zinc-500 dark:text-zinc-400 font-medium mb-2">No responses yet</p>
                                 <p className="text-muted-foreground mb-4">Share your form to start collecting responses!</p>
-                                <Button asChild variant="default" size="sm">
-                                    <Link href={`/app/${orgSlug}/forms/${formId}`}>Share Form</Link>
+                                <Button variant="default" size="sm" onClick={() => setFormShareModalId(formId)}>
+                                    Share Form
                                 </Button>
                             </div>
                         ) : (

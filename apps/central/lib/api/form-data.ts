@@ -3,10 +3,10 @@ import { FormData, SerializedLexicalState } from "@/types/form-data";
 import { RestErrorSchema } from "../error";
 
 export async function getFormData(
-  orgId: string,
+  orgId: string | null,
   formId: string
 ): Promise<RestResponse<FormData>> {
-  if (!orgId.startsWith("org_")) {
+  if (orgId && !orgId.startsWith("org_")) {
     orgId = "org_" + orgId;
   }
 
@@ -14,13 +14,17 @@ export async function getFormData(
     formId = "form_" + formId;
   }
 
+  const unauthed = orgId == null;
+
   const url = new URL(
-    window.location.origin +
-      "/api/orgs/" +
-      orgId +
-      "/forms/" +
-      formId +
-      "/questions"
+    unauthed
+      ? window.location.origin + "/api/forms/" + formId + "/questions"
+      : window.location.origin +
+        "/api/orgs/" +
+        orgId +
+        "/forms/" +
+        formId +
+        "/questions"
   );
 
   const response = await fetch(url);
@@ -42,7 +46,6 @@ export async function getFormData(
 
   throw new Error("Invalid response");
 }
-
 
 export async function setFormData(
   orgId: string,

@@ -1,7 +1,7 @@
 import { useAppStore } from "@/components/provider/app-store";
 import { Button } from "@/components/ui/button";
 import { useAtom } from "jotai";
-import { CopyIcon, FileTextIcon, SettingsIcon } from "lucide-react";
+import { CopyIcon, FileTextIcon, SettingsIcon, ShareIcon } from "lucide-react";
 import { useCallback, useEffect } from "react";
 import { editorAtom } from ".";
 import { toast } from "sonner";
@@ -17,6 +17,7 @@ interface Props {
 
 export function EditorButtons({ org, formId }: Props) {
     const setActions = useAppStore((state) => state.setActions);
+    const setFormShareModalId = useAppStore((state) => state.setFormShareModalId);
     const router = useRouter();
     const [editor] = useAtom(editorAtom);
 
@@ -71,6 +72,12 @@ export function EditorButtons({ org, formId }: Props) {
                 <SaveButton org={org} formId={formId} />
                 <PublishButton />
             </div>
+            <Button className="size-7.5" onClick={() => {
+                setFormShareModalId(formId);
+            }}>
+                <ShareIcon className="size-4" />
+                <span className="sr-only">Share</span>
+            </Button>
         </div>
     );
 }

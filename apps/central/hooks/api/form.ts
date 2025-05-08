@@ -15,15 +15,14 @@ export function useFormList(orgId: string) {
   });
 }
 
-export function useForm(orgId: string, formId: string) {
-  let processedOrgId = orgId;
-  if (!orgId.startsWith("org_")) {
-    processedOrgId = "org_" + orgId;
+export function useForm(orgId: string | null, formId: string) {
+  if (orgId && !orgId.startsWith("org_")) {
+    orgId = "org_" + orgId;
   }
 
   return useQuery({
-    queryKey: ["forms", processedOrgId, formId],
-    queryFn: async () => getDataOrThrow(await getForm(processedOrgId, formId)),
+    queryKey: [`forms${orgId ? "" : "_unauthed"}`, orgId, formId],
+    queryFn: async () => getDataOrThrow(await getForm(orgId, formId)),
   });
 }
 

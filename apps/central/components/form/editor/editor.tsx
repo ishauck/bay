@@ -23,7 +23,7 @@ function onError(error: Error) {
   console.error(error);
 }
 
-export function Editor({ editable = true, defaultData, org, formId }: { editable: boolean, defaultData: SerializedLexicalState | null, org: Organization, formId: string }) {
+export function Editor({ editable = true, defaultData, org, formId }: { editable: boolean, defaultData: SerializedLexicalState | null, org: Organization | null, formId: string }) {
   const initialConfig: InitialConfigType = {
     ...LexicalEditorConfig,
     namespace: 'MyEditor',
@@ -62,7 +62,9 @@ export function Editor({ editable = true, defaultData, org, formId }: { editable
         <AllowNewlineAtEndPlugin />
         <EditorSetter />
         <EditorDataSetter defaultData={defaultData} />
-        <EditorAutosave org={org} formId={formId} />
+        {(editable && org) && (
+          <EditorAutosave org={org} formId={formId} />
+        )}
       </LexicalComposer>
     </div>
   );
