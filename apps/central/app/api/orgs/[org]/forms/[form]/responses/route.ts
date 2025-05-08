@@ -1,6 +1,6 @@
 import { POST } from "@/app/api/forms/[form]/responses/route";
 import { auth } from "@/lib/auth";
-import { getForm } from "@/lib/db/form";
+import { getForm, updateForm } from "@/lib/db/form";
 import { deleteAllResponses, getResponses } from "@/lib/db/response";
 import { RestError } from "@/lib/error";
 import { ResponseMetadata } from "@/types/response";
@@ -111,6 +111,15 @@ export async function DELETE(
   const formObject = forms[0];
 
   await deleteAllResponses(formObject.id);
+
+  // Reset responseCount to 0 in the form table
+  await updateForm(formObject.id, {
+    ...formObject,
+    createdAt: formObject.createdAt instanceof Date ? formObject.createdAt.toISOString() : formObject.createdAt,
+    updatedAt: new Date().toISOString(),
+    responseCount: 0,
+    nonAcceptingMessage: formObject.nonAcceptingMessage ?? "This form is not currently accepting responses.",
+  });
 
   return Response.json({ success: true });
 }

@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import { getForm } from "@/lib/db/form";
+import { getForm, updateForm } from "@/lib/db/form";
 import { deleteResponse, getResponse } from "@/lib/db/response";
 import { RestError } from "@/lib/error";
 import { NextRequest } from "next/server";
@@ -100,6 +100,15 @@ export async function DELETE(
   const formObject = forms[0];
 
   await deleteResponse(formObject.id, id);
+
+  // Decrement responseCount in the form table, but not below 0
+  await updateForm(formObject.id, {
+    ...formObject,
+    createdAt: formObject.createdAt instanceof Date ? formObject.createdAt.toISOString() : formObject.createdAt,
+    updatedAt: new Date().toISOString(),
+    responseCount: Math.max(0, (formObject.responseCount || 1) - 1),
+    nonAcceptingMessage: formObject.nonAcceptingMessage ?? "This form is not currently accepting responses.",
+  });
 
   return Response.json({ success: true });
 }
