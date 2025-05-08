@@ -17,5 +17,5 @@ export function getDataOrThrow<T>(response: RestResponse<T>) {
     throw createRestError(response.error.code, response.error.message, response.error.status);
   }
 
-  return response.data;
+  return response.data as T;
 }

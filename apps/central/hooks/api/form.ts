@@ -25,3 +25,4 @@ export function useForm(orgId: string, formId: string) {
     queryFn: async () => getDataOrThrow(await getForm(processedOrgId, formId)),
   });
 }
+

@@ -9,6 +9,12 @@ const CreateResponseResponse = z.object({
 
 type CreateResponseResponse = z.infer<typeof CreateResponseResponse>;
 
+const DeleteResponseResponse = z.object({
+    success: z.literal(true),
+});
+
+type DeleteResponseResponse = z.infer<typeof DeleteResponseResponse>;
+
 export async function createResponse(response: Response, formId: string): Promise<RestResponse<CreateResponseResponse>> {
     if (!formId.startsWith("form_")) {
         formId = `form_${formId}`;
@@ -83,6 +89,62 @@ export async function getResponse(orgId: string, formId: string, id: string): Pr
         return {
             data: data as StoredResponse,
             error: null,
+        };
+    }
+
+    throw new Error("Invalid response");
+}
+
+export async function deleteResponse(orgId: string, formId: string, id: string): Promise<RestResponse<true>> {
+    if (!formId.startsWith("form_")) {
+        formId = `form_${formId}`;
+    }
+
+    const res = await fetch(`/api/orgs/${orgId}/forms/${formId}/responses/${id}`, {
+        method: "DELETE",
+    });
+
+    const data = await res.json();
+
+    if (DeleteResponseResponse.safeParse(data).success) {
+        return {
+            data: true,
+            error: null,
+        };
+    }
+
+    if (RestErrorSchema.safeParse(data).success) {
+        return {
+            data: null,
+            error: data as RestErrorSchema,
+        };
+    }
+
+    throw new Error("Invalid response");
+}
+
+export async function deleteAllResponses(orgId: string, formId: string): Promise<RestResponse<true>> {
+    if (!formId.startsWith("form_")) {
+        formId = `form_${formId}`;
+    }
+
+    const res = await fetch(`/api/orgs/${orgId}/forms/${formId}/responses`, {
+        method: "DELETE",
+    });
+
+    const data = await res.json();
+
+    if (DeleteResponseResponse.safeParse(data).success) {
+        return {
+            data: true,
+            error: null,
+        };
+    }
+
+    if (RestErrorSchema.safeParse(data).success) {
+        return {
+            data: null,
+            error: data as RestErrorSchema,
         };
     }
 

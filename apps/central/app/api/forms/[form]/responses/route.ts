@@ -1,4 +1,4 @@
-import { getForm } from "@/lib/db/form";
+import { getForm, updateForm } from "@/lib/db/form";
 import { verifyResponse } from "@/lib/server/response";
 import { NextRequest, NextResponse } from "next/server";
 import { RestError } from "@/lib/error";
@@ -91,6 +91,14 @@ export async function POST(
       userAgent: userAgent ?? undefined,
     },
     response: verify.data,
+  });
+
+  await updateForm(formObject.id, {
+    ...formObject,
+    createdAt: formObject.createdAt.toISOString(),
+    updatedAt: new Date().toISOString(),
+    nonAcceptingMessage: formObject.nonAcceptingMessage ?? "This form is not currently accepting responses.",
+    responseCount: formObject.responseCount + 1,
   });
 
   return NextResponse.json(

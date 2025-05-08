@@ -1,10 +1,10 @@
 'use client';
-import { useResponseKeys } from "@/hooks/api/responses";
+import { useDeleteAllResponses, useResponseKeys } from "@/hooks/api/responses";
 import { useParams } from "next/navigation";
 import { useCurrentOrganization } from "@/hooks/use-current-org";
 import { useForm } from "@/hooks/api/form";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download, Globe2, MonitorSmartphone, Copy, Laptop2, Server, MapPin } from "lucide-react";
+import { ArrowLeft, Download, Globe2, MonitorSmartphone, Copy, Laptop2, Server, MapPin, MoreHorizontal, Delete, Inbox } from "lucide-react";
 import Link from "next/link";
 import { UAParser } from 'ua-parser-js';
 import { useEffect, useState } from "react";
@@ -13,8 +13,8 @@ import { toast } from "sonner";
 import { atom, useAtom, useSetAtom } from "jotai";
 import { ResizablePanel } from "@/components/ui/resizable";
 import { ResizablePanelGroup } from "@/components/ui/resizable";
-import Image from "next/image";
 import { ResponseSheet } from "./ResponseSheet";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 const visibleResponseAtom = atom<ResponseMetadata | null>(null);
 
@@ -25,6 +25,7 @@ export default function ResponsesPage() {
     const org = useCurrentOrganization();
     const form = useForm(org.data?.id ?? "", formId);
     const [visibleResponse, setVisibleResponse] = useAtom(visibleResponseAtom);
+    const deleteAllResponses = useDeleteAllResponses();
     const { data, isLoading, error } = useResponseKeys(org.data?.id ?? "", formId);
 
     // Add Escape key support to close the details panel
@@ -74,29 +75,44 @@ export default function ResponsesPage() {
                                     Back to form
                                 </Link>
                             </Button>
-                            <Button variant="outline" size="sm" onClick={() => {
-                                if (!data) return;
-                                const json = JSON.stringify(data, null, 2);
-                                const blob = new Blob([json], { type: 'application/json' });
-                                const url = URL.createObjectURL(blob);
-                                const a = document.createElement('a');
-                                a.href = url;
-                                a.download = `${formId}__responses.json`;
-                                document.body.appendChild(a);
-                                a.click();
-                                document.body.removeChild(a);
-                                URL.revokeObjectURL(url);
-                            }}>
-                                <Download />
-                                Download all
-                            </Button>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="outline" size="iconSm">
+                                        <MoreHorizontal />
+                                        <span className="sr-only">More options</span>
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start">
+                                    <DropdownMenuItem onClick={() => {
+                                        if (!data) return;
+                                        const json = JSON.stringify(data, null, 2);
+                                        const blob = new Blob([json], { type: 'application/json' });
+                                        const url = URL.createObjectURL(blob);
+                                        const a = document.createElement('a');
+                                        a.href = url;
+                                        a.download = `${formId}__responses.json`;
+                                        document.body.appendChild(a);
+                                        a.click();
+                                        document.body.removeChild(a);
+                                        URL.revokeObjectURL(url);
+                                    }}>
+                                        <Download />
+                                        Download all
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem className="text-destructive" onClick={() => deleteAllResponses.mutate({ orgId: org.data?.id ?? "", formId })}>
+                                        <Delete />
+                                        Delete all
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                     </div>
                     <div className="overflow-x-auto mt-4">
                         {data?.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-12">
-                                <Image src="/empty-state.svg" alt="No responses" width={128} height={128} className="mb-4" />
-                                <p className="text-zinc-500">No responses yet. Share your form to start collecting responses!</p>
+                                <Inbox className="w-24 h-24 text-muted-foreground mb-4" />
+                                <p className="text-muted-foreground">No responses yet. Share your form to start collecting responses!</p>
                             </div>
                         ) : (
                             <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800">
