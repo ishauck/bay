@@ -29,12 +29,12 @@ export function FormShareMenu() {
                     </Label>
                     <Input
                         id="link"
-                        defaultValue={`https://${window.location.host}/respond/${formShareModalId}`}
+                        defaultValue={typeof window !== 'undefined' ? `http${window.location.protocol === 'https:' ? 's' : ''}://${window.location.host}/respond/${formShareModalId}` : ''}
                         readOnly
                     />
                 </div>
                 <Button type="submit" size="sm" className="px-3" onClick={() => {
-                    navigator.clipboard.writeText(`https://${window.location.host}/respond/${formShareModalId}`);
+                    navigator.clipboard.writeText(`${window.location.protocol === 'https:' ? 'https' : 'http'}://${window.location.host}/respond/${formShareModalId}`);
                 }}>
                     <span className="sr-only">Copy</span>
                     <Copy />
