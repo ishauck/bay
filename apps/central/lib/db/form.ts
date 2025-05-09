@@ -1,4 +1,4 @@
-import { FormPartial } from "@/types/api/forms";
+import { FormPartial } from "@/types/forms";
 import { db } from "./drizzle";
 import { form, organization } from "./schema";
 import { eq } from "drizzle-orm";
@@ -9,14 +9,10 @@ export async function getForm(id: string) {
 }
 
 export async function getFormsByOrganizationId(orgId: string) {
-
   return await db
     .select()
     .from(form)
-    .innerJoin(
-      organization,
-      eq(form.organizationId, organization.id)
-    )
+    .innerJoin(organization, eq(form.organizationId, organization.id))
     .where(eq(organization.id, orgId));
 }
 
@@ -38,29 +34,44 @@ export async function getFormsByOrganizationSlug(slug: string) {
     .innerJoin(organization, eq(form.organizationId, organization.id))
     .where(eq(organization.slug, slug));
 }
-export async function createForm(orgId: string, formData: Omit<FormPartial, 'id' | 'organizationId'>) {
-  console.log('createForm called with orgId:', orgId, 'formData:', formData);
+export async function createForm(
+  orgId: string,
+  formData: Omit<FormPartial, "id" | "organizationId" | "responseCount">
+) {
+  console.log("createForm called with orgId:", orgId, "formData:", formData);
   const id = nanoid();
-  
+
   const formValues = {
     id,
     organizationId: orgId,
+    responseCount: 0,
     ...formData,
   };
-  console.log('Attempting to create form with values:', formValues);
+  console.log("Attempting to create form with values:", formValues);
   try {
     const result = await db.insert(form).values({
       ...formValues,
       createdAt: new Date(formValues.createdAt),
-      updatedAt: formValues.updatedAt ? new Date(formValues.updatedAt) : null
+      updatedAt: formValues.updatedAt ? new Date(formValues.updatedAt) : null,
     });
-    console.log('Successfully created form');
+    console.log("Successfully created form");
     return {
       res: result,
       id,
     };
   } catch (error) {
-    console.error('Error creating form:', error);
+    console.error("Error creating form:", error);
     throw error;
   }
+}
+
+export async function updateForm(id: string, formData: FormPartial) {
+  return await db
+    .update(form)
+    .set({
+      ...formData,
+      createdAt: new Date(formData.createdAt),
+      updatedAt: formData.updatedAt ? new Date(formData.updatedAt) : null,
+    })
+    .where(eq(form.id, id));
 }
