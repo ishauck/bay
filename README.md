@@ -19,7 +19,7 @@ Bay is (going to be) a Google Forms alternative.
 - Package Manager: [Bun](https://bun.sh/)
 
 ## Roadmap
-1. Add form maker UI (see `ishauck/add-form-builder` branch)
-2. Add responses
-3. Form theming
-4. Custom domains
+- [x] Add form maker UI
+- [x] Add responses
+- [ ] Form theming
+- [ ] Custom domains
