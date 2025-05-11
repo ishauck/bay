@@ -87,6 +87,23 @@ export const form = pgTable("form", {
   // Whether the form is currently active and accepting responses
   isActive: boolean("is_active").notNull().default(true),
   nonAcceptingMessage: text("non_accepting_message").default("This form is not currently accepting responses."),
+  // **************
+  // THEMING
+  // **************
+  backgroundType: text("background_type"),
+  backgroundValue: text("background_value"),
+  fontFamily: text("font_family"),
+  fontColor: integer("font_color"),
+  primaryColor: integer("primary_color"),
+  secondaryColor: integer("secondary_color"),
+  accentColor: integer("accent_color"),
+  primaryTextColor: integer("primary_text_color"),
+  secondaryTextColor: integer("secondary_text_color"),
+  accentTextColor: integer("accent_text_color"),
+  borderRadius: integer("border_radius"),
+  borderColor: integer("border_color"),
+  ringColor: integer("ring_color"),
+  destructiveColor: integer("destructive_color")
 });
 
 export const reportAbuse = pgTable("report_abuse", {

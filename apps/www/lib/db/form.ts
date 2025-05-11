@@ -1,4 +1,4 @@
-import { FormPartial } from "@/types/forms";
+import { FormPartial, ThemingSchema } from "@/types/forms";
 import { db } from "./drizzle";
 import { form, organization } from "./schema";
 import { eq } from "drizzle-orm";
@@ -36,7 +36,7 @@ export async function getFormsByOrganizationSlug(slug: string) {
 }
 export async function createForm(
   orgId: string,
-  formData: Omit<FormPartial, "id" | "organizationId" | "responseCount">
+  formData: Omit<FormPartial, "id" | "organizationId" | "responseCount" | keyof ThemingSchema>
 ) {
   console.log("createForm called with orgId:", orgId, "formData:", formData);
   const id = nanoid();

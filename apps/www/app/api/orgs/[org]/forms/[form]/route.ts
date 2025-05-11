@@ -14,7 +14,10 @@ export async function GET(
   });
 
   if (!session) {
-    return Response.json(new RestError("unauthorized", "Unauthorized", 401).toJSON(), { status: 401 });
+    return Response.json(
+      new RestError("unauthorized", "Unauthorized", 401).toJSON(),
+      { status: 401 }
+    );
   }
 
   const orgs = await auth.api.listOrganizations({
@@ -33,7 +36,10 @@ export async function GET(
   const forms = await getForm(form.substring("form_".length));
 
   if (forms.length === 0 || forms[0].organizationId !== orgObject.id) {
-    return Response.json(new RestError("not_found", "Form not found", 404).toJSON(), { status: 404 });
+    return Response.json(
+      new RestError("not_found", "Form not found", 404).toJSON(),
+      { status: 404 }
+    );
   }
 
   const formObject = forms[0];
@@ -52,7 +58,10 @@ export async function PATCH(
   });
 
   if (!session) {
-    return Response.json(new RestError("unauthorized", "Unauthorized", 401).toJSON(), { status: 401 });
+    return Response.json(
+      new RestError("unauthorized", "Unauthorized", 401).toJSON(),
+      { status: 401 }
+    );
   }
 
   const orgs = await auth.api.listOrganizations({
@@ -71,7 +80,10 @@ export async function PATCH(
   const forms = await getForm(form.substring("form_".length));
 
   if (forms.length === 0 || forms[0].organizationId !== orgObject.id) {
-    return Response.json(new RestError("not_found", "Form not found", 404).toJSON(), { status: 404 });
+    return Response.json(
+      new RestError("not_found", "Form not found", 404).toJSON(),
+      { status: 404 }
+    );
   }
 
   const formObject = forms[0];
@@ -81,10 +93,31 @@ export async function PATCH(
   const result = UpdatableForm.partial().safeParse(body);
 
   if (!result.success) {
-    return Response.json(new RestError("invalid_request", "Invalid request", 400).toJSON(), { status: 400 });
+    return Response.json(
+      new RestError("invalid_request", "Invalid request", 400).toJSON(),
+      { status: 400 }
+    );
   }
 
-  const { isActive, nonAcceptingMessage, name } = result.data;
+  const {
+    isActive,
+    nonAcceptingMessage,
+    name,
+    backgroundType,
+    backgroundValue,
+    fontFamily,
+    fontColor,
+    primaryColor,
+    secondaryColor,
+    accentColor,
+    primaryTextColor,
+    secondaryTextColor,
+    accentTextColor,
+    borderRadius,
+    borderColor,
+    ringColor,
+    destructiveColor,
+  } = result.data;
 
   const updatedForm = formObject;
 
@@ -100,11 +133,76 @@ export async function PATCH(
     updatedForm.name = name;
   }
 
+  if (backgroundType !== undefined) {
+    updatedForm.backgroundType = backgroundType;
+  }
+
+  if (backgroundValue !== undefined) {
+    updatedForm.backgroundValue = backgroundValue;
+  }
+
+  if (fontFamily !== undefined) {
+    updatedForm.fontFamily = fontFamily;
+  }
+
+  if (fontColor !== undefined) {
+    updatedForm.fontColor = fontColor;
+  }
+
+  if (primaryColor !== undefined) {
+    updatedForm.primaryColor = primaryColor;
+  }
+
+  if (secondaryColor !== undefined) {
+    updatedForm.secondaryColor = secondaryColor;
+  }
+
+  if (accentColor !== undefined) {
+    updatedForm.accentColor = accentColor;
+  }
+
+  if (primaryTextColor !== undefined) {
+    updatedForm.primaryTextColor = primaryTextColor;
+  }
+
+  if (secondaryTextColor !== undefined) {
+    updatedForm.secondaryTextColor = secondaryTextColor;
+  }
+
+  if (accentTextColor !== undefined) {
+    updatedForm.accentTextColor = accentTextColor;
+  }
+
+  if (borderRadius !== undefined) {
+    updatedForm.borderRadius = borderRadius;
+  }
+
+  if (borderColor !== undefined) {
+    updatedForm.borderColor = borderColor;
+  }
+
+  if (ringColor !== undefined) {
+    updatedForm.ringColor = ringColor;
+  }
+
+  if (destructiveColor !== undefined) {
+    updatedForm.destructiveColor = destructiveColor;
+  }
+
   await updateForm(form.substring("form_".length), {
     ...updatedForm,
-    createdAt: updatedForm.createdAt instanceof Date ? updatedForm.createdAt.toISOString() : updatedForm.createdAt,
-    updatedAt: updatedForm.updatedAt instanceof Date && updatedForm.updatedAt !== null ? updatedForm.updatedAt.toISOString() : updatedForm.updatedAt,
-    nonAcceptingMessage: updatedForm.nonAcceptingMessage ?? "This form is not currently accepting responses.",
+    createdAt:
+      updatedForm.createdAt instanceof Date
+        ? updatedForm.createdAt.toISOString()
+        : updatedForm.createdAt,
+    updatedAt:
+      updatedForm.updatedAt instanceof Date && updatedForm.updatedAt !== null
+        ? updatedForm.updatedAt.toISOString()
+        : updatedForm.updatedAt,
+    nonAcceptingMessage:
+      updatedForm.nonAcceptingMessage ??
+      "This form is not currently accepting responses.",
+    backgroundType: updatedForm.backgroundType as "image" | "color" | null,
   });
 
   return Response.json(formObject);
