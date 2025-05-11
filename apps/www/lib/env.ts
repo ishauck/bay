@@ -15,6 +15,7 @@ export const env = createEnv({
     REDIS_KV_REST_API_TOKEN: z.string().optional(),
     VERCEL_TOKEN: z.string(),
     VERCEL_TEAM_ID: z.string(),
+    GOOGLE_FONTS_API_KEY: z.string(),
   },
 
   /**
@@ -48,6 +49,7 @@ export const env = createEnv({
     NEXT_PUBLIC_AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL,
     VERCEL_TOKEN: process.env.VERCEL_TOKEN,
     VERCEL_TEAM_ID: process.env.VERCEL_TEAM_ID,
+    GOOGLE_FONTS_API_KEY: process.env.GOOGLE_FONTS_API_KEY,
   },
 
   // @ts-expect-error - This is a workaround to allow the runtimeEnv to be used in the client
